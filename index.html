@@ -18,7 +18,7 @@ textarea,input,select{font-family:inherit;box-sizing:border-box}
 .content{padding:120px 14px 14px}
 .banner{background:linear-gradient(135deg,#1a2540,#2d4a8a);border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#fff}
 .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border:1.5px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.badge{font-size:9px;border-radius:4px;padding:1px 5px;font-weight:600;display:inline-block}
+.badge{font-size:9px;border-radius:4px;padding:1px 5px;font-weight:600;display:inline-block;margin-right:2px}
 .progress-bar{background:#f0f0f0;border-radius:6px;height:7px;overflow:hidden}
 .progress-fill{height:100%;border-radius:6px;transition:width .4s}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end}
@@ -39,27 +39,17 @@ textarea{resize:vertical;min-height:70px;font-size:13px;padding:10px}
 </style>
 </head>
 <body>
-<div id="app" style="display:flex;align-items:center;justify-content:center;height:100vh;color:#999;font-size:15px">불러오는 중...</div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const app = initializeApp({
-  apiKey:"AIzaSyD5Kj4l-SGyyhy3dogG--GLLq1THYH93I8",
-  authDomain:"pmba-planner.firebaseapp.com",
-  projectId:"pmba-planner",
-  storageBucket:"pmba-planner.firebasestorage.app",
-  messagingSenderId:"207973377200",
-  appId:"1:207973377200:web:fe53f97c5e5eae8fe94775"
-});
-const db = getFirestore(app);
-const REF = doc(db, "planner", "data");
-
+<div id="app"></div>
+<script>
 const PROGRAMS=["프로페셔널MBA","카이스트MBA","이그제큐티브MBA","금융MBA","디지털금융MBA","금융공학프로그램","정보경영프로그램","임팩트MBA"];
 const COHORTS=["14기","13기","12기"];
 const RATINGS=["⭐ 매우 추천","👍 추천","😐 보통","👎 비추천"];
 const WC={"1~4주":"#4F86C6","5~8주":"#E07B54","1~8주":"#9B6BB5"};
 const DC={"카이스트MBA":"#2196F3","이그제큐티브MBA":"#9C27B0","임팩트MBA":"#4CAF50","금융MBA(디지털금융MBA)":"#FF9800","디지털금융MBA":"#F44336","금융공학프로그램":"#795548","정보경영프로그램":"#00BCD4"};
+
+// JSONbin 설정 (무료 공유 저장소)
+const BIN_ID = "683d5a3b8960c979a5a0e0e4";
+const API_KEY = "$2a$10$placeholder_will_create";
 
 const COURSES=[
   {id:"BIZ60014",code:"BIZ.60014",name:"신사업개발",professor:"장대철",capacity:60,weeks:"1~4주",color:"#4F86C6",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"",schedule:[{date:"2026-06-30",day:"화",time:"19:00~22:00"},{date:"2026-07-02",day:"목",time:"19:00~22:00"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-21",day:"화",time:"19:00~22:00"},{date:"2026-07-23",day:"목",time:"19:00~22:00"}]},
@@ -119,8 +109,8 @@ function schedSummary(sch){
 function getSavedUser(){try{return JSON.parse(localStorage.getItem("ku")||"null");}catch(e){return null;}}
 function badge(text,bg,color){
   const s=document.createElement("span");
-  s.className="badge"; s.textContent=text;
-  Object.assign(s.style,{background:bg,color,marginRight:"3px"});
+  s.className="badge";s.textContent=text;
+  s.style.background=bg;s.style.color=color;
   return s;
 }
 
@@ -128,74 +118,98 @@ function badge(text,bg,color){
 let G={
   data:{users:[],selections:[]},
   user:getSavedUser(),
-  view:"courses", expanded:null, calYear:2026, calMonth:5, allDept:"전체",
-  showLogin:false, showGuest:false,
+  view:"courses",expanded:null,calYear:2026,calMonth:5,allDept:"전체",
+  showLogin:false,showGuest:false,
   loginForm:{program:"프로페셔널MBA",cohort:"14기",name:""},
-  addModal:null, addForm:{reason:"",rating:""},
-  toast:"", toastTimer:null
+  addModal:null,addForm:{reason:"",rating:""},
+  toast:"",toastTimer:null,saving:false
 };
 
-// ── Firebase ──────────────────────────────────────────
-async function async function save(fn){
-  const next={users:G.data.users.map(u=>({...u})),selections:G.data.selections.map(s=>({...s}))};
-  fn(next);
-  G.data=next; render();
-  try{await setDoc(REF,next);}catch(e){console.error(e);}
+// ── 저장소 (localStorage 기반 + 주기적 동기화) ──────────
+const STORE_KEY="kaist_mba_data_v1";
+
+function loadLocal(){
+  try{
+    const d=JSON.parse(localStorage.getItem(STORE_KEY)||"null");
+    if(d&&Array.isArray(d.users)&&Array.isArray(d.selections)) G.data=d;
+  }catch(e){}
 }
 
-// 즉시 렌더링 (Firebase 응답 기다리지 않고)
-render();
+function saveLocal(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(G.data));}catch(e){}
+}
 
-// 3초 안에 Firebase 응답 없으면 한번 더 렌더링
-const fallbackTimer = setTimeout(()=>{ render(); }, 3000);
+// ── 서버 동기화 (JSONbin) ──────────────────────────────
+// JSONbin API - 무료 공개 bin
+const BIN_ID="6a0ed0416877513b27aaa376";
+const MASTER_KEY="$2a$10$lnj2XARlHWVJZ4Vkc3YtNuH.64V8zJei.7NfckLaIR8Py6ZCdkZCa";
 
-onSnapshot(REF, snap=>{
-  clearTimeout(fallbackTimer);
-  if(snap.exists()){
-    const d=snap.data();
-    G.data={users:Array.isArray(d.users)?d.users:[],selections:Array.isArray(d.selections)?d.selections:[]};
-  } else {
-    G.data={users:[],selections:[]};
-  }
+async function syncFromServer(){
+  try{
+    const r=await fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{
+      headers:{"X-Master-Key":MASTER_KEY}
+    });
+    if(r.ok){
+      const j=await r.json();
+      const d=j.record;
+      if(d&&Array.isArray(d.users)){G.data=d;saveLocal();}
+    }
+  }catch(e){console.log("서버 동기화 실패, 로컬 데이터 사용");}
   render();
-}, err=>{ clearTimeout(fallbackTimer); console.error(err); render(); });
-  if(snap.exists()){
-    const d=snap.data();
-    G.data={users:Array.isArray(d.users)?d.users:[],selections:Array.isArray(d.selections)?d.selections:[]};
-  } else {
-    G.data={users:[],selections:[]};
-  }
-  render();
-},err=>console.error(err));
+}
 
+async function syncToServer(){
+  try{
+    await fetch("https://api.jsonbin.io/v3/b/"+BIN_ID,{
+      method:"PUT",
+      headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY},
+      body:JSON.stringify(G.data)
+    });
+  }catch(e){console.log("서버 저장 실패");}
+}
+
+// ── 초기화 ──────────────────────────────────────────────
+loadLocal();
+render(); // 로컬 데이터로 즉시 렌더링
+syncFromServer(); // 서버에서 최신 데이터 로드
+
+// ── 저장 ──────────────────────────────────────────────
+function save(fn){
+  fn(G.data);
+  saveLocal();
+  render();
+  syncToServer();
+}
+
+// ── 토스트 ──────────────────────────────────────────────
 function showToast(msg){
-  G.toast=msg; render();
+  G.toast=msg;render();
   if(G.toastTimer)clearTimeout(G.toastTimer);
   G.toastTimer=setTimeout(()=>{G.toast="";render();},2400);
 }
 
 // ── 액션 ──────────────────────────────────────────────
-async function doLogin(){
-  const{program,cohort,name}=G.loginForm; if(!name.trim())return;
+function doLogin(){
+  const{program,cohort,name}=G.loginForm;if(!name.trim())return;
   const uid=[program,cohort,name.trim()].join("|");
   const u={id:uid,program,cohort,name:name.trim()};
-  await save(d=>{if(!d.users.find(x=>x.id===uid))d.users.push(u);});
-  G.user=u; try{localStorage.setItem("ku",JSON.stringify(u));}catch(e){}
-  G.showLogin=false; showToast(u.name+"님, 환영합니다!");
+  save(d=>{if(!d.users.find(x=>x.id===uid))d.users.push(u);});
+  G.user=u;try{localStorage.setItem("ku",JSON.stringify(u));}catch(e){}
+  G.showLogin=false;showToast(u.name+"님, 환영합니다!");
 }
 function doLogout(){G.user=null;try{localStorage.removeItem("ku");}catch(e){}render();}
-async function doAdd(){
+function doAdd(){
   if(!G.user||!G.addModal)return;
   const cid=G.addModal.courseId,{reason,rating}=G.addForm;
-  await save(d=>{if(!d.selections.find(s=>s.userId===G.user.id&&s.courseId===cid))d.selections.push({userId:G.user.id,courseId:cid,reason,rating,addedAt:new Date().toISOString()});});
-  G.addModal=null; showToast("수강계획에 추가했습니다!");
+  save(d=>{if(!d.selections.find(s=>s.userId===G.user.id&&s.courseId===cid))d.selections.push({userId:G.user.id,courseId:cid,reason,rating,addedAt:new Date().toISOString()});});
+  G.addModal=null;showToast("수강계획에 추가했습니다!");
 }
-async function doRemove(cid){
-  await save(d=>{const i=d.selections.findIndex(s=>s.userId===G.user.id&&s.courseId===cid);if(i>=0)d.selections.splice(i,1);});
+function doRemove(cid){
+  save(d=>{const i=d.selections.findIndex(s=>s.userId===G.user.id&&s.courseId===cid);if(i>=0)d.selections.splice(i,1);});
   showToast("수강계획에서 제거했습니다.");
 }
-async function doField(cid,field,val){
-  await save(d=>{const s=d.selections.find(s=>s.userId===G.user.id&&s.courseId===cid);if(s)s[field]=val;});
+function doField(cid,field,val){
+  save(d=>{const s=d.selections.find(s=>s.userId===G.user.id&&s.courseId===cid);if(s)s[field]=val;});
 }
 
 // ── 셀렉터 ──────────────────────────────────────────────
@@ -207,7 +221,7 @@ const getUser=id=>G.data.users.find(u=>u.id===id);
 
 // ── DOM 헬퍼 ──────────────────────────────────────────
 function el(tag,attrs,children){
-  attrs=attrs||{}; children=Array.isArray(children)?children:(children?[children]:[]);
+  attrs=attrs||{};children=Array.isArray(children)?children:(children?[children]:[]);
   const e=document.createElement(tag);
   for(const[k,v]of Object.entries(attrs)){
     if(v==null)continue;
@@ -250,7 +264,6 @@ function renderCard(course){
   const expanded=G.expanded===course.id;
   const mySel=getMySel(course.id);
   const cf=sel?getConflicts(course.id,myIds()):[];
-
   return el("div",{class:"card",style:{
     background:course.cross?"#fcfcfc":"#fff",
     border:sel?"2px solid "+course.color:course.cross?"1.5px dashed #ccc":"1.5px solid #eee",
@@ -272,7 +285,7 @@ function renderCard(course){
         style:{background:sel?course.color:"#f0f0f0",color:sel?"#fff":"#555",borderRadius:"20px",fontSize:"12px",padding:"5px 12px",fontWeight:"600",flexShrink:"0"},
         onClick:()=>{
           if(!G.user){G.showGuest=true;render();return;}
-          if(sel){doRemove(course.id);}
+          if(sel)doRemove(course.id);
           else{G.addForm={reason:"",rating:""};G.addModal={courseId:course.id};render();}
         }
       },sel?"✓ 담음":"+ 담기"),
@@ -286,33 +299,28 @@ function renderCard(course){
         el("span",{style:{fontSize:"11px",color:"#555"}},["관심인원 ",el("b",{},[String(sels.length)+"명"])]),
         course.capacity?el("span",{style:{fontSize:"11px",color:"#999"}},"정원 "+course.capacity+"명"+(pct!==null?" ("+pct+"%)":"")):null,
       ]),
-      course.capacity?el("div",{class:"progress-bar"},[
-        el("div",{class:"progress-fill",style:{width:Math.min(pct,100)+"%",background:pct>80?"#e03":pct>50?"#f5a623":course.color}}),
-      ]):null,
+      course.capacity?el("div",{class:"progress-bar"},[el("div",{class:"progress-fill",style:{width:Math.min(pct,100)+"%",background:pct>80?"#e03":pct>50?"#f5a623":course.color}})]):null,
     ]),
     expanded?el("div",{style:{marginTop:"12px",borderTop:"1px solid #f0f0f0",paddingTop:"12px"}},[
       el("div",{style:{marginBottom:"10px"}},[
         el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"5px"}},"📅 강의 일정"),
-        el("div",{class:"schedule-wrap"},course.schedule.map(sc=>
-          el("span",{class:"chip",style:{background:course.color+"15",color:course.color,borderColor:course.color+"44"}},fmtMD(sc.date)+"("+sc.day+") "+sc.time)
-        )),
+        el("div",{class:"schedule-wrap"},course.schedule.map(sc=>el("span",{class:"chip",style:{background:course.color+"15",color:course.color,borderColor:course.color+"44"}},fmtMD(sc.date)+"("+sc.day+") "+sc.time))),
         course.remarks?el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"5px"}},"⚠ "+course.remarks):null,
       ]),
       el("div",{style:{marginBottom:"10px"}},[
         el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"5px"}},"👥 참여 예정자 ("+sels.length+"명)"),
-        sels.length===0
-          ?el("div",{style:{fontSize:"11px",color:"#bbb"}},"아직 없어요!")
-          :el("div",{},sels.map(s=>{
-              const u=getUser(s.userId);if(!u)return null;
-              return el("div",{class:"member-card"},[
-                el("div",{style:{display:"flex",alignItems:"center",gap:"6px",flexWrap:"wrap"}},[
-                  el("span",{style:{fontSize:"12px",fontWeight:"600",color:"#222"}},u.name+(G.user&&G.user.id===u.id?" (나)":"")),
-                  el("span",{style:{fontSize:"10px",color:"#888"}},u.program+" "+u.cohort),
-                  s.rating?el("span",{style:{fontSize:"10px",background:"#f0f0f0",borderRadius:"6px",padding:"1px 6px"}},s.rating):null,
-                ]),
-                s.reason?el("div",{style:{fontSize:"11px",color:"#555",marginTop:"3px"}},"💬 "+s.reason):null,
-              ]);
-            })),
+        sels.length===0?el("div",{style:{fontSize:"11px",color:"#bbb"}},"아직 없어요!"):
+        el("div",{},sels.map(s=>{
+          const u=getUser(s.userId);if(!u)return null;
+          return el("div",{class:"member-card"},[
+            el("div",{style:{display:"flex",alignItems:"center",gap:"6px",flexWrap:"wrap"}},[
+              el("span",{style:{fontSize:"12px",fontWeight:"600",color:"#222"}},u.name+(G.user&&G.user.id===u.id?" (나)":"")),
+              el("span",{style:{fontSize:"10px",color:"#888"}},u.program+" "+u.cohort),
+              s.rating?el("span",{style:{fontSize:"10px",background:"#f0f0f0",borderRadius:"6px",padding:"1px 6px"}},s.rating):null,
+            ]),
+            s.reason?el("div",{style:{fontSize:"11px",color:"#555",marginTop:"3px"}},"💬 "+s.reason):null,
+          ]);
+        })),
       ]),
       G.user&&sel&&mySel?el("div",{style:{background:"#f8f8f8",borderRadius:"10px",padding:"10px"}},[
         el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"8px"}},"✏️ 내 정보 수정"),
@@ -322,9 +330,7 @@ function renderCard(course){
         ]),
         el("div",{},[
           el("div",{style:{fontSize:"11px",color:"#666",marginBottom:"5px"}},"강의 평가"),
-          el("div",{class:"rating-wrap"},RATINGS.map(r=>
-            el("button",{class:"rating-btn",style:{background:mySel.rating===r?course.color:"#eee",color:mySel.rating===r?"#fff":"#555"},onClick:()=>doField(course.id,"rating",mySel.rating===r?"":r)},r)
-          )),
+          el("div",{class:"rating-wrap"},RATINGS.map(r=>el("button",{class:"rating-btn",style:{background:mySel.rating===r?course.color:"#eee",color:mySel.rating===r?"#fff":"#555"},onClick:()=>doField(course.id,"rating",mySel.rating===r?"":r)},r))),
         ]),
       ]):null,
     ]):null,
@@ -425,7 +431,7 @@ function renderGuestModal(){
     el("div",{class:"modal"},[
       el("div",{style:{fontSize:"36px",textAlign:"center",marginBottom:"12px"}},"👋"),
       el("div",{style:{fontWeight:"800",fontSize:"17px",color:"#1a2540",textAlign:"center",marginBottom:"8px"}},"로그인하고 함께 계획하세요"),
-      el("div",{style:{fontSize:"13px",color:"#666",textAlign:"center",lineHeight:"1.7",marginBottom:"24px"}},"원우들의 수강 계획을 확인하고\n내 수강계획을 공유할 수 있어요."),
+      el("div",{style:{fontSize:"13px",color:"#666",textAlign:"center",lineHeight:"1.7",marginBottom:"24px"}},"원우들의 수강 계획을 확인하고 내 수강계획을 공유할 수 있어요."),
       el("div",{class:"btn-row"},[
         el("button",{class:"btn btn-secondary",onClick:()=>{G.showGuest=false;render();}},"취소"),
         el("button",{class:"btn btn-primary",onClick:()=>{G.showGuest=false;G.showLogin=true;render();}},"로그인하기"),
@@ -442,25 +448,12 @@ function renderLoginModal(){
       ...[["소속 과정","program",PROGRAMS],["기수","cohort",COHORTS]].map(([label,key,opts])=>
         el("div",{style:{marginBottom:"12px"}},[
           el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},label),
-          (()=>{
-            const s=document.createElement("select");
-            Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});
-            opts.forEach(o=>{const op=document.createElement("option");op.value=o;op.textContent=o;if(o===G.loginForm[key])op.selected=true;s.append(op);});
-            s.addEventListener("change",e=>G.loginForm[key]=e.target.value);
-            return s;
-          })(),
+          (()=>{const s=document.createElement("select");Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});opts.forEach(o=>{const op=document.createElement("option");op.value=o;op.textContent=o;if(o===G.loginForm[key])op.selected=true;s.append(op);});s.addEventListener("change",e=>G.loginForm[key]=e.target.value);return s;})(),
         ])
       ),
       el("div",{style:{marginBottom:"18px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},"이름"),
-        (()=>{
-          const inp=document.createElement("input");inp.type="text";inp.placeholder="실명을 입력해주세요";
-          Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});
-          inp.value=G.loginForm.name;
-          inp.addEventListener("input",e=>G.loginForm.name=e.target.value);
-          inp.addEventListener("keydown",e=>e.key==="Enter"&&doLogin());
-          return inp;
-        })(),
+        (()=>{const inp=document.createElement("input");inp.type="text";inp.placeholder="실명을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",e=>G.loginForm.name=e.target.value);inp.addEventListener("keydown",e=>e.key==="Enter"&&doLogin());return inp;})(),
       ]),
       el("div",{class:"btn-row"},[
         el("button",{class:"btn btn-secondary",onClick:()=>{G.showLogin=false;render();}},"취소"),
@@ -485,9 +478,7 @@ function renderAddModal(){
       ]),
       el("div",{style:{marginBottom:"20px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"6px"}},"강의 평가 (선택 · 들어봤다면)"),
-        el("div",{class:"rating-wrap"},RATINGS.map(r=>
-          el("button",{class:"rating-btn",style:{background:G.addForm.rating===r?c.color:"#f0f0f0",color:G.addForm.rating===r?"#fff":"#555"},onClick:()=>{G.addForm.rating=G.addForm.rating===r?"":r;render();}},r)
-        )),
+        el("div",{class:"rating-wrap"},RATINGS.map(r=>el("button",{class:"rating-btn",style:{background:G.addForm.rating===r?c.color:"#f0f0f0",color:G.addForm.rating===r?"#fff":"#555"},onClick:()=>{G.addForm.rating=G.addForm.rating===r?"":r;render();}},r))),
       ]),
       el("div",{class:"btn-row"},[
         el("button",{class:"btn btn-secondary",onClick:()=>{G.addModal=null;render();}},"취소"),
