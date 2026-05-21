@@ -60,9 +60,7 @@ const DOC=doc(db,"planner","data");
 const PROGRAMS=["프로페셔널MBA","카이스트MBA","이그제큐티브MBA","금융MBA","디지털금융MBA","금융공학프로그램","정보경영프로그램","임팩트MBA"];
 const COHORTS=["14기","13기","12기"];
 const RATINGS=["⭐ 매우 추천","👍 추천","😐 보통","👎 비추천"];
-// 주차별 고정 색상
 const WEEK_COLOR={"1~4주":"#4F86C6","5~8주":"#E07B54","1~8주":"#9B6BB5"};
-// 강의 시간대 요약
 function summarizeSchedule(schedule){
   const days=[...new Set(schedule.map(s=>s.day))];
   const times=schedule.map(s=>s.time);
@@ -75,6 +73,31 @@ function summarizeSchedule(schedule){
   if(hasAfternoon)slots.push("오후");
   return days.join("·")+" / "+slots.join("+");
 }
+
+// 전체 여름학기 과목 (PMBA 외 타 과정)
+const ALL_COURSES=[
+  {dept:"카이스트MBA",code:"BIZ.50085",name:"소셜 미디어 및 네트워크 분석",professor:"박희목",days:"월~목",time:"09:00~13:00",weeks:"1~4주",capacity:40,remarks:"K/TMBA Only → 변경기간 All / 7.6(월)~7.23(목)"},
+  {dept:"카이스트MBA",code:"BIZ.80004",name:"해외현장실습",professor:"학과교수",days:"월~금",time:"09:00~18:00",weeks:"1~4주",capacity:null,remarks:"K/TMBA Only / IE Business School (스페인) 6.22~7.3"},
+  {dept:"이그제큐티브MBA",code:"BIZ.69900 XA",name:"경영특수논제 <AI와 비즈니스 혁신>",professor:"윤여선",days:"금·토",time:"15:00~21:00 / 09:00~16:00",weeks:"5~8주",capacity:null,remarks:"EMBA Only / 8.14~8.22 예정"},
+  {dept:"이그제큐티브MBA",code:"BIZ.69900 XB",name:"경영특수논제 <전략적 미래예측>",professor:"서용석",days:"금·토",time:"15:00~21:00 / 09:00~16:00",weeks:"5~8주",capacity:null,remarks:"EMBA Only / 7.31~8.8"},
+  {dept:"이그제큐티브MBA",code:"BIZ.80005",name:"해외현장연구 I",professor:"윤여선",days:"월~금",time:"09:00~17:30",weeks:"1~4주",capacity:null,remarks:"EMBA Only 1년차 / Bocconi (이탈리아) 6.28~7.11"},
+  {dept:"이그제큐티브MBA",code:"BIZ.80006",name:"해외현장연구 II",professor:"윤여선",days:"월~금",time:"09:00~17:30",weeks:"1~4주",capacity:null,remarks:"EMBA Only 2년차 / Bocconi (이탈리아) 6.14~6.27"},
+  {dept:"임팩트MBA",code:"BIZ.60027",name:"임팩트벤처 시장조사 및 BM개발",professor:"장대철",days:"화·목",time:"13:00~16:00",weeks:"5~8주",capacity:null,remarks:"IMBA Only → 변경기간 All / 7.28~8.20"},
+  {dept:"임팩트MBA",code:"BIZ.80003",name:"임팩트벤처 현장연수",professor:"진병채",days:"월~금",time:"09:00~18:00",weeks:"1~4주",capacity:null,remarks:"IMBA Only / Silicon Valley (미국) 6.28~7.4"},
+  {dept:"금융MBA(디지털금융MBA)",code:"BAF.60012",name:"사모투자",professor:"Daniel Rettl",days:"월·수·금·토",time:"19:00~22:00 / 13:00~16:00",weeks:"1~4주",capacity:50,remarks:"DFMBA/FMBA/MFE → 6.25(목) 09:30부터 All / 6.29~7.15"},
+  {dept:"디지털금융MBA",code:"BAF.50000",name:"금융윤리와 사회책임",professor:"권민수",days:"토",time:"09:00~12:00",weeks:"1~8주",capacity:50,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.50007",name:"금융 데이터베이스",professor:"김아현",days:"화·목",time:"19:00~22:00",weeks:"5~8주",capacity:50,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.50023 DA",name:"금융 데이터 마이닝 (A반)",professor:"김아현",days:"월·수",time:"19:00~22:00",weeks:"1~4주",capacity:45,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.50023 DB",name:"금융 데이터 마이닝 (B반)",professor:"김아현",days:"화·목",time:"19:00~22:00",weeks:"1~4주",capacity:45,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.69906 D",name:"디지털금융특수논제 <디지털자산>",professor:"김서영",days:"월·수",time:"19:00~22:00",weeks:"5~8주",capacity:50,remarks:"DFMBA Only → 변경기간 All"},
+  {dept:"디지털금융MBA",code:"BAF.94368",name:"글로벌금융 현장연구",professor:"김경국",days:"월~목",time:"09:00~18:00",weeks:"1~4주",capacity:55,remarks:"DFMBA Only / UCL (영국) 6.22~6.25"},
+  {dept:"금융공학프로그램",code:"BAF.50002 Q",name:"재무회계",professor:"정부천",days:"월~목",time:"09:00~12:00",weeks:"5~8주",capacity:null,remarks:"MFE Only / 7.20~8.13"},
+  {dept:"정보경영프로그램",code:"BIZ.94304",name:"IT경영 해외현장연구",professor:"강금석",days:"월~금",time:"09:00~18:00",weeks:"1~8주",capacity:null,remarks:"IMMS Only / Santa Clara Univ (미국) 7.11~7.19"},
+];
+const DEPT_COLORS={
+  "카이스트MBA":"#2196F3","이그제큐티브MBA":"#9C27B0","임팩트MBA":"#4CAF50",
+  "금융MBA(디지털금융MBA)":"#FF9800","디지털금융MBA":"#F44336","금융공학프로그램":"#795548","정보경영프로그램":"#00BCD4",
+};
 const COURSES=[
   {id:"BIZ60014",code:"BIZ.60014",name:"신사업개발",professor:"장대철",capacity:60,weeks:"1~4주",color:"#4F86C6",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"",
    schedule:[{date:"2026-06-30",day:"화",time:"19:00~22:00"},{date:"2026-07-02",day:"목",time:"19:00~22:00"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-21",day:"화",time:"19:00~22:00"},{date:"2026-07-23",day:"목",time:"19:00~22:00"}]},
@@ -105,43 +128,61 @@ function pad(n){return String(n).padStart(2,"0");}
 let state={
   data:{users:[],selections:[]},
   user:JSON.parse(localStorage.getItem("kaist_user")||"null"),
-  view:"courses",expanded:null,calYear:2026,calMonth:5,
+  view:"courses",expanded:null,calYear:2026,calMonth:5,allDept:"전체",
   showLogin:false,loginForm:{program:"프로페셔널MBA",cohort:"14기",name:""},
   addModal:null,addForm:{reason:"",rating:""},
   toast:"",toastTimer:null,busy:false
 };
 
-async function fbWrite(d){
+// Firestore 직접 쓰기 (merge 사용으로 안전하게)
+async function fbSave(data){
   try{
-    await setDoc(DOC, JSON.parse(JSON.stringify(d)));
-    console.log("저장 성공");
+    await setDoc(DOC, data);
     return true;
   }catch(e){
-    console.error("저장 실패",e);
-    alert("저장 실패: "+e.message);
+    console.error("fbSave error",e);
+    alert("저장 오류: "+e.message);
     return false;
   }
 }
 
-onSnapshot(DOC,snap=>{
-  state.data=snap.exists()?snap.data():{users:[],selections:[]};
-  if(!Array.isArray(state.data.users))state.data.users=[];
-  if(!Array.isArray(state.data.selections))state.data.selections=[];
+// 실시간 리스너
+onSnapshot(DOC, snap=>{
+  if(snap.exists()){
+    const d=snap.data();
+    state.data={
+      users: Array.isArray(d.users)?d.users:[],
+      selections: Array.isArray(d.selections)?d.selections:[]
+    };
+  } else {
+    state.data={users:[],selections:[]};
+  }
   render();
-},err=>{
-  console.error("onSnapshot 오류",err);
-  alert("Firestore 연결 오류: "+err.message);
-});
+}, err=>{ console.error("snapshot err",err); });
 
-function showToast(msg){state.toast=msg;render();if(state.toastTimer)clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>{state.toast="";render();},2400);}
+function showToast(msg){
+  state.toast=msg; render();
+  if(state.toastTimer)clearTimeout(state.toastTimer);
+  state.toastTimer=setTimeout(()=>{state.toast="";render();},2400);
+}
 
+// commit: state.data를 직접 수정 후 저장
 async function commit(fn){
-  state.busy=true;render();
-  const copy=JSON.parse(JSON.stringify(state.data));
-  fn(copy);
-  const ok=await fbWrite(copy);
-  if(ok){state.data=copy;}
-  state.busy=false;render();
+  if(state.busy)return;
+  state.busy=true;
+  // 깊은 복사 후 변이
+  const next={
+    users: JSON.parse(JSON.stringify(state.data.users)),
+    selections: JSON.parse(JSON.stringify(state.data.selections))
+  };
+  fn(next);
+  // 낙관적 업데이트
+  state.data=next;
+  render();
+  // Firebase에 저장
+  await fbSave(next);
+  state.busy=false;
+  render();
 }
 
 async function doLogin(){
@@ -204,7 +245,7 @@ function renderHeader(){
         :el("button",{style:{background:"#4F86C6",color:"#fff",borderRadius:"16px",fontSize:"12px",padding:"6px 14px"},onClick:()=>{state.showLogin=true;render();}},"로그인"),
     ]),
     el("div",{class:"nav"},[
-      ["courses","📚 과목"],["calendar","📅 달력"],["members","👥 원우"]
+      ["courses","📚 과목"],["calendar","📅 달력"],["members","👥 원우"],["all","🏫 전체과정"]
     ].map(([v,l])=>el("button",{class:state.view===v?"active":"",onClick:()=>{state.view=v;render();}},l))),
   ]);
 }
@@ -332,6 +373,41 @@ function renderCalendar(){
   ]);
 }
 
+function renderAll(){
+  const depts=["전체",...new Set(ALL_COURSES.map(c=>c.dept))];
+  const filtered=state.allDept==="전체"?ALL_COURSES:ALL_COURSES.filter(c=>c.dept===state.allDept);
+  return el("div",{},[
+    // 과정 필터 탭
+    el("div",{style:{display:"flex",flexWrap:"wrap",gap:"5px",marginBottom:"12px"}},
+      depts.map(d=>el("button",{
+        style:{fontSize:"11px",padding:"4px 10px",borderRadius:"14px",border:"1px solid #ddd",
+          background:state.allDept===d?"#1a2540":"#fff",color:state.allDept===d?"#fff":"#555",cursor:"pointer"},
+        onClick:()=>{state.allDept=d;render();}
+      },d))
+    ),
+    el("div",{style:{fontSize:"12px",color:"#888",marginBottom:"10px"}},filtered.length+"개 과목"),
+    ...filtered.map(c=>{
+      const dc=DEPT_COLORS[c.dept]||"#888";
+      const wc=WEEK_COLOR[c.weeks]||"#888";
+      return el("div",{class:"card"},[
+        el("div",{style:{display:"flex",alignItems:"flex-start",gap:"8px"}},[
+          el("div",{style:{flex:1}},[
+            el("div",{style:{display:"flex",alignItems:"center",gap:"5px",flexWrap:"wrap",marginBottom:"3px"}},[
+              el("span",{style:{fontSize:"13px",fontWeight:"700",color:"#222"}},c.name),
+              el("span",{class:"badge",style:{background:dc+"22",color:dc}},c.dept),
+              el("span",{class:"badge",style:{background:wc+"22",color:wc}},c.weeks),
+              el("span",{class:"badge",style:{background:"#f0f0f0",color:"#555"}},c.days+" / "+c.time),
+            ]),
+            el("div",{style:{fontSize:"11px",color:"#888"}},c.code+" | "+c.professor+" 교수"),
+            c.capacity?el("div",{style:{fontSize:"11px",color:"#aaa"}},"정원 "+c.capacity+"명"):null,
+            el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"3px"}},c.remarks),
+          ]),
+        ]),
+      ]);
+    }),
+  ]);
+}
+
 function renderMembers(){
   const withSel=state.data.users.filter(u=>state.data.selections.some(s=>s.userId===u.id));
   if(!withSel.length)return el("div",{style:{textAlign:"center",color:"#bbb",padding:"40px"}},"아직 수강계획을 등록한 원우가 없어요.");
@@ -428,7 +504,7 @@ function render(){
         el("div",{style:{fontSize:"20px",fontWeight:"800"}},["D-5 ",el("span",{style:{fontSize:"13px",fontWeight:"400",color:"#a0c4ff"}},"5.26(화) 12:30 시작")]),
         el("div",{style:{fontSize:"10px",color:"#8fa8d8",marginTop:"2px"}},"추첨: 5.26 → 결과발표: 5.28 12:00 → 선착순: 5.28~5.29"),
       ]),
-      state.view==="courses"?renderCourses():state.view==="calendar"?renderCalendar():renderMembers(),
+      state.view==="courses"?renderCourses():state.view==="calendar"?renderCalendar():state.view==="members"?renderMembers():renderAll(),
     ]),
     renderLoginModal(),
     renderAddModal(),
