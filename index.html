@@ -136,15 +136,22 @@ let G={
 };
 
 // ── Firebase ──────────────────────────────────────────
-async function save(fn){
+async function async function save(fn){
   const next={users:G.data.users.map(u=>({...u})),selections:G.data.selections.map(s=>({...s}))};
   fn(next);
   G.data=next; render();
   try{await setDoc(REF,next);}catch(e){console.error(e);}
 }
 
-render();
 onSnapshot(REF,snap=>{
+  if(snap.exists()){
+    const d=snap.data();
+    G.data={users:Array.isArray(d.users)?d.users:[],selections:Array.isArray(d.selections)?d.selections:[]};
+  } else {
+    G.data={users:[],selections:[]};
+  }
+  render();
+},err=>{console.error(err);render();});
   if(snap.exists()){
     const d=snap.data();
     G.data={users:Array.isArray(d.users)?d.users:[],selections:Array.isArray(d.selections)?d.selections:[]};
