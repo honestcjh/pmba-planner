@@ -2,13 +2,12 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
-<!-- 💡 모바일 브라우저 상단 상태바 색상을 헤더 남색과 일치시켜 아이콘이 흰색으로 보이게 합니다 -->
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#1a2540"/>
 <title>KAIST MBA 수강계획</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#1a2540;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;min-height:100vh}
+body{background:#f6f7fb;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;min-height:100vh}
 button{cursor:pointer;font-family:inherit;border:none}
 textarea,input,select{font-family:inherit}
 #app {
@@ -19,9 +18,9 @@ textarea,input,select{font-family:inherit}
   max-width: 500px;
   margin: 0 auto;
   background: #f6f7fb;
-  box-shadow: 0 0 20px rgba(0,0,0,0.15);
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
 }
-.header{background:#1a2540;padding:16px 16px 0;position:sticky;top:0;z-index:100}
+.header{background:#1a2540;padding:16px 16px 0;position:sticky;top:0;z-index:100;width:100%}
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .nav{display:flex;gap:4px}
 .nav button{flex:1;padding:8px 0;background:transparent;color:#8fa8d8;font-size:12px;border-radius:10px 10px 0 0}
@@ -51,7 +50,7 @@ textarea{resize:vertical;min-height:70px;font-size:13px;padding:10px}
 </head>
 <body>
 
-<div id="app" style="padding:40px; text-align:center; color:#fff; font-size:15px;">불러오는 중...</div>
+<div id="app" style="padding:40px; text-align:center; color:#999; font-size:15px;">불러오는 중...</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -136,7 +135,7 @@ function pad(n){return String(n).padStart(2,"0");}
 let S={
   data:{users:[],selections:[]},
   user:(() => { try{ return JSON.parse(localStorage.getItem("ku")||"null"); }catch(e){ return null; } })(),
-  view:"courses", expanded:null, calYear:2026, calMonth:4, allDept:"전체", // 5월 표시를 위해 4로 고정 (JS 달은 0부터)
+  view:"courses", expanded:null, calYear:2026, calMonth:4, allDept:"전체",
   showLogin:false, loginForm:{program:"프로페셔널MBA",cohort:"14기",name:""},
   addModal:null, addForm:{reason:"",rating:""},
   toast:"", toastTimer:null, busy:false
@@ -504,7 +503,7 @@ try {
   render();
 }
 
-// 최초 1회 즉시 실행하여 '불러오는 중'을 제거
+// 최초 1회 즉시 실행
 render();
 </script>
 </body>
