@@ -111,24 +111,36 @@ let state={
   toast:"",toastTimer:null,busy:false
 };
 
-async function fbRead(){try{const s=await getDoc(DOC);return s.exists()?s.data():{users:[],selections:[]};}catch(e){return{users:[],selections:[]};}}
-async function fbWrite(d){try{await setDoc(DOC,d);}catch(e){}}
+async function fbWrite(d){
+  try{
+    await setDoc(DOC, JSON.parse(JSON.stringify(d)));
+    console.log("저장 성공");
+    return true;
+  }catch(e){
+    console.error("저장 실패",e);
+    alert("저장 실패: "+e.message);
+    return false;
+  }
+}
 
 onSnapshot(DOC,snap=>{
   state.data=snap.exists()?snap.data():{users:[],selections:[]};
-  if(!state.data.users)state.data.users=[];
-  if(!state.data.selections)state.data.selections=[];
+  if(!Array.isArray(state.data.users))state.data.users=[];
+  if(!Array.isArray(state.data.selections))state.data.selections=[];
   render();
+},err=>{
+  console.error("onSnapshot 오류",err);
+  alert("Firestore 연결 오류: "+err.message);
 });
 
 function showToast(msg){state.toast=msg;render();if(state.toastTimer)clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>{state.toast="";render();},2400);}
 
 async function commit(fn){
   state.busy=true;render();
-  const fresh=await fbRead();
-  fn(fresh);
-  await fbWrite(fresh);
-  state.data=fresh;
+  const copy=JSON.parse(JSON.stringify(state.data));
+  fn(copy);
+  const ok=await fbWrite(copy);
+  if(ok){state.data=copy;}
   state.busy=false;render();
 }
 
