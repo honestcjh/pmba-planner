@@ -376,12 +376,12 @@ function renderGuestModal(){
   if(!G.showGuest)return el("span",{});
   return el("div",{class:"ov",onClick:function(e){if(e.target===e.currentTarget){G.showGuest=false;render();}}},[
     el("div",{class:"mod"},[
-      el("div",{style:{fontSize:"36px",textAlign:"center",marginBottom:"12px"}},"👋"),
-      el("div",{style:{fontWeight:"800",fontSize:"17px",color:"#1a2540",textAlign:"center",marginBottom:"8px"}},"로그인하고 함께 계획하세요"),
-      el("div",{style:{fontSize:"13px",color:"#666",textAlign:"center",lineHeight:"1.7",marginBottom:"24px"}},"원우들의 수강 계획을 확인하고 내 수강계획을 공유할 수 있어요."),
+      el("div",{style:{fontSize:"36px",textAlign:"center",marginBottom:"12px"}},"📚"),
+      el("div",{style:{fontWeight:"800",fontSize:"17px",color:"#1a2540",textAlign:"center",marginBottom:"8px"}},"이름을 등록하고 함께 계획해요"),
+      el("div",{style:{fontSize:"13px",color:"#666",textAlign:"center",lineHeight:"1.7",marginBottom:"24px"}},"이름만 입력하면 원우들이 어떤 수업에\n관심 있는지 함께 확인할 수 있어요."),
       el("div",{class:"brow"},[
-        el("button",{class:"btn bs",onClick:function(){G.showGuest=false;render();}},"취소"),
-        el("button",{class:"btn bp",onClick:function(){G.showGuest=false;G.showLogin=true;render();}},"로그인하기")
+        el("button",{class:"btn bs",onClick:function(){G.showGuest=false;render();}},"나중에"),
+        el("button",{class:"btn bp",onClick:function(){G.showGuest=false;G.showLogin=true;render();}},"이름 등록하기")
       ])
     ])
   ]);
@@ -391,7 +391,8 @@ function renderLoginModal(){
   if(!G.showLogin)return el("span",{});
   return el("div",{class:"ov",onClick:function(e){if(e.target===e.currentTarget){G.showLogin=false;render();}}},[
     el("div",{class:"mod"},[
-      el("div",{style:{fontWeight:"800",fontSize:"16px",marginBottom:"16px",color:"#1a2540"}},"내 정보 입력"),
+      el("div",{style:{fontWeight:"800",fontSize:"16px",marginBottom:"6px",color:"#1a2540"}},"내 이름 등록"),
+      el("div",{style:{fontSize:"12px",color:"#888",marginBottom:"16px"}},"이름만 입력하면 원우들과 수강 관심 과목을 공유할 수 있어요 😊"),
       ...[["소속 과정","program",PROGRAMS],["기수","cohort",COHORTS]].map(function(arr){
         var label=arr[0],key=arr[1],opts=arr[2];
         return el("div",{style:{marginBottom:"12px"}},[
@@ -405,7 +406,7 @@ function renderLoginModal(){
       ]),
       el("div",{class:"brow"},[
         el("button",{class:"btn bs",onClick:function(){G.showLogin=false;render();}},"취소"),
-        el("button",{class:"btn bp",style:{opacity:G.loginForm.name.trim()?"1":"0.4"},onClick:doLogin},"입력 완료")
+        el("button",{class:"btn bp",style:{opacity:G.loginForm.name.trim()?"1":"0.4"},onClick:doLogin},"등록 완료")
       ])
     ])
   ]);
@@ -455,7 +456,7 @@ function render(){
               el("span",{style:{color:"#a0c4ff",fontSize:"12px"}},G.user.name),
               el("button",{style:{background:"rgba(255,255,255,.13)",color:"#ccc",borderRadius:"14px",fontSize:"11px",padding:"4px 10px",border:"none",cursor:"pointer",fontFamily:"inherit"},onClick:doLogout},"로그아웃")
             ])
-          :el("button",{style:{background:"#4F86C6",color:"#fff",borderRadius:"16px",fontSize:"12px",padding:"6px 14px",border:"none",cursor:"pointer",fontFamily:"inherit"},onClick:function(){G.showLogin=true;render();}},"로그인")
+          :el("button",{style:{background:"#4F86C6",color:"#fff",borderRadius:"16px",fontSize:"12px",padding:"6px 14px",border:"none",cursor:"pointer",fontFamily:"inherit"},onClick:function(){G.showLogin=true;render();}},"이름 등록")
       ]),
       el("div",{class:"nav"},[
         ["courses","📚 과목"],["calendar","📅 달력"],["members","👥 원우"],["all","🏫 전체과정"]
