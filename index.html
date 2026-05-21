@@ -60,6 +60,21 @@ const DOC=doc(db,"planner","data");
 const PROGRAMS=["프로페셔널MBA","카이스트MBA","이그제큐티브MBA","금융MBA","디지털금융MBA","금융공학프로그램","정보경영프로그램","임팩트MBA"];
 const COHORTS=["14기","13기","12기"];
 const RATINGS=["⭐ 매우 추천","👍 추천","😐 보통","👎 비추천"];
+// 주차별 고정 색상
+const WEEK_COLOR={"1~4주":"#4F86C6","5~8주":"#E07B54","1~8주":"#9B6BB5"};
+// 강의 시간대 요약
+function summarizeSchedule(schedule){
+  const days=[...new Set(schedule.map(s=>s.day))];
+  const times=schedule.map(s=>s.time);
+  const hasEvening=times.some(t=>parseInt(t)>=18);
+  const hasMorning=times.some(t=>parseInt(t)<12&&parseInt(t)>=6);
+  const hasAfternoon=times.some(t=>parseInt(t)>=12&&parseInt(t)<18);
+  const slots=[];
+  if(hasEvening)slots.push("야간");
+  if(hasMorning)slots.push("오전");
+  if(hasAfternoon)slots.push("오후");
+  return days.join("·")+" / "+slots.join("+");
+}
 const COURSES=[
   {id:"BIZ60014",code:"BIZ.60014",name:"신사업개발",professor:"장대철",capacity:60,weeks:"1~4주",color:"#4F86C6",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"",
    schedule:[{date:"2026-06-30",day:"화",time:"19:00~22:00"},{date:"2026-07-02",day:"목",time:"19:00~22:00"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-21",day:"화",time:"19:00~22:00"},{date:"2026-07-23",day:"목",time:"19:00~22:00"}]},
@@ -194,7 +209,8 @@ function renderCard(course){
         el("div",{style:{display:"flex",alignItems:"center",gap:"5px",flexWrap:"wrap"}},[
           el("span",{style:{fontSize:"13px",fontWeight:"700",color:"#222"}},course.name),
           course.cross?el("span",{class:"badge",style:{background:"#f0e6ff",color:"#7b4fb5"}},"타과정"):null,
-          el("span",{class:"badge",style:{background:course.color+"22",color:course.color}},course.weeks),
+          el("span",{class:"badge",style:{background:(WEEK_COLOR[course.weeks]||"#888")+"22",color:WEEK_COLOR[course.weeks]||"#888"}},course.weeks),
+          el("span",{class:"badge",style:{background:"#f0f0f0",color:"#555",fontWeight:"500"}},summarizeSchedule(course.schedule)),
           cf.length?el("span",{class:"badge",style:{background:"#fff0f0",color:"#d00"}},"⚠ 시간겹침"):null,
         ]),
         el("div",{style:{fontSize:"11px",color:"#888",marginTop:"2px"}},course.code+" | "+course.professor+" 교수"),
