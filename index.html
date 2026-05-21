@@ -2,11 +2,10 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,maximum-scale=1.0,minimum-scale=1.0,viewport-fit=cover"/>
 <meta name="theme-color" content="#1a2540"/>
 <title>KAIST MBA 수강계획</title>
 <style>
-/* 💡 전역 초기화 및 모바일 맞춤 폰트 크기 조절 방지 */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -14,7 +13,6 @@
   -webkit-text-size-adjust: none;
 }
 
-/* 💡 화면 전체 베이스 설정 */
 html, body {
   background: #f6f7fb; 
   font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
@@ -31,7 +29,6 @@ textarea, input, select {
   font-family: inherit;
 }
 
-/* 💡 부모의 overflow를 제거하여 sticky가 정상 작동하도록 수정하고 너비를 100% 밀착시킵니다 */
 #app {
   display: flex;
   flex-direction: column;
@@ -42,7 +39,6 @@ textarea, input, select {
   background: #f6f7fb;
 }
 
-/* 💡 PC(데스크탑) 환경에서만 500px 폰 뷰 레이아웃을 제공합니다 */
 @media (min-width: 500px) {
   #app {
     max-width: 500px;
@@ -50,7 +46,6 @@ textarea, input, select {
   }
 }
 
-/* 💡 모바일 좌우 여백을 완전히 없애기 위해 헤더 너비를 100% 꽉 채우고 스크롤 고정 보장 */
 .header {
   background: #1a2540;
   padding: 16px 16px 0;
@@ -166,14 +161,21 @@ textarea, input, select {
   box-shadow: 0 4px 20px rgba(0,0,0,0.25);
   white-space: nowrap;
 }
+
+/* 💡 핵심 수정: 날짜 텍스트가 가로로 삐져나가지 못하도록 삼중 잠금 장치를 겁니다 */
 .conflict-box {
   margin-top: 8px;
   background: #fff0f0;
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: 1px solid #fcc;
-  word-break: break-all;
+  width: 100%;
+  max-width: 100%;
+  white-space: normal !important; /* 무조건 자동 줄바꿈 허용 */
+  word-break: break-all !important;  /* 텍스트가 박스 끝에 닿으면 글자 단위로 강제 줄바꿈 */
+  overflow-wrap: break-word !important;
 }
+
 .schedule-wrap {
   display: flex;
   flex-wrap: wrap;
@@ -445,7 +447,7 @@ function renderCard(course){
     ]),
     cf.length?el("div",{class:"conflict-box"},[
       el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#c00",marginBottom:"3px"}},"⚠ 아래 과목과 시간이 겹쳐요"),
-      ...cf.map(c=>el("div",{style:{fontSize:"11px",color:"#c00"}},"· "+c.course.name+" ("+c.dates.map(fmtMD).join(", ")+")"))
+      ...cf.map(c=>el("div",{style:{fontSize:"11px",color:"#c00"},class:"conflict-text"},"· "+c.course.name+" ("+c.dates.map(fmtMD).join(", ")+")"))
     ]):null,
     el("div",{style:{marginTop:"10px"}},[
       el("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:"3px"}},[
@@ -685,7 +687,6 @@ try {
   render();
 }
 
-// 최초 1회 즉시 실행
 render();
 </script>
 </body>
