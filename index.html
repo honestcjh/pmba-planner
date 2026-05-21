@@ -7,29 +7,33 @@
 <title>KAIST MBA 수강계획</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-  /* 💡 body 배경색을 연한 회색으로 통일하고, 삐져나가는 요소로 인한 강제 여백을 원천 차단합니다. */
+
+/* 💡 body 배경색을 연한 회색으로 통일하고, 가로로 삐져나가는 강제 여백을 원천 차단합니다. */
 body {
   background: #f6f7fb; 
   font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   padding: 0;
   margin: 0;
   min-height: 100vh;
-  overflow-x: hidden; /* 💡 가로 스크롤 및 억제된 여백 생성 방지 */
+  overflow-x: hidden;
 }
 
-/* 💡 핵심 수정: 모바일에서는 무조건 가로 폭 100%로 화면에 꽉 채웁니다. */
+button{cursor:pointer;font-family:inherit;border:none}
+textarea,input,select{font-family:inherit}
+
+/* 💡 핵심 수정: 모바일 기기에서는 가로폭 100%로 화면 좌우 끝까지 꽉 채웁니다. */
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100vw;       /* 💡 화면 너비에 정확히 일치 */
-  max-width: 100%;    /* 💡 모바일에서는 500px 고정을 풀고 100%로 작동 */
+  width: 100vw;
+  max-width: 100%;
   margin: 0 auto;
   background: #f6f7fb;
-  overflow-x: hidden; /* 💡 내부 요소가 삐져나와 여백을 만드는 현상 방지 */
+  overflow-x: hidden;
 }
 
-/* 💡 미디어 쿼리: 화면이 큰 PC(데스크탑) 브라우저에서 볼 때만 가로 폭을 500px로 제한합니다. */
+/* 💡 미디어 쿼리: 화면이 넓은 PC(데스크탑) 브라우저에서 볼 때만 가로 폭을 500px로 제한하고 가운데로 모읍니다. */
 @media (min-width: 500px) {
   #app {
     max-width: 500px;
@@ -37,15 +41,8 @@ body {
   }
 }
 
-/* 헤더 영역도 가로 폭에 유연하게 맞추기 위해 100%로 설정합니다. */
-.header {
-  background: #1a2540;
-  padding: 16px 16px 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  width: 100%;
-}
+.header{background:#1a2540;padding:16px 16px 0;position:sticky;top:0;z-index:100;width:100%}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .nav{display:flex;gap:4px}
 .nav button{flex:1;padding:8px 0;background:transparent;color:#8fa8d8;font-size:12px;border-radius:10px 10px 0 0}
 .nav button.active{background:#4F86C6;color:#fff;font-weight:700}
