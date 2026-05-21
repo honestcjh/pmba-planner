@@ -2,23 +2,23 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
 <meta name="theme-color" content="#1a2540"/>
 <title>KAIST MBA 수강계획</title>
 <style>
-/* 💡 모든 요소의 마진, 패딩 초기화 및 가로 스크롤 방지 */
+/* 💡 전역 초기화 및 모바일 맞춤 폰트 크기 조절 방지 */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-text-size-adjust: none; /* 시스템 폰트 크기로 인한 깨짐 방지 */
+  -webkit-text-size-adjust: none;
 }
 
-body {
+/* 💡 화면 전체 베이스 설정 */
+html, body {
   background: #f6f7fb; 
   font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
   width: 100%;
 }
 
@@ -31,7 +31,7 @@ textarea, input, select {
   font-family: inherit;
 }
 
-/* 💡 핵심 수정: vw 단위를 버리고 width: 100%와 max-width 유연화로 화면에 무조건 밀착시킵니다. */
+/* 💡 부모의 overflow를 제거하여 sticky가 정상 작동하도록 수정하고 너비를 100% 밀착시킵니다 */
 #app {
   display: flex;
   flex-direction: column;
@@ -40,10 +40,9 @@ textarea, input, select {
   max-width: 100%;
   margin: 0 auto;
   background: #f6f7fb;
-  overflow-x: hidden;
 }
 
-/* 💡 PC(데스크탑) 크기에서만 모바일 폰 뷰 형태로 고정시킵니다. */
+/* 💡 PC(데스크탑) 환경에서만 500px 폰 뷰 레이아웃을 제공합니다 */
 @media (min-width: 500px) {
   #app {
     max-width: 500px;
@@ -51,9 +50,11 @@ textarea, input, select {
   }
 }
 
+/* 💡 모바일 좌우 여백을 완전히 없애기 위해 헤더 너비를 100% 꽉 채우고 스크롤 고정 보장 */
 .header {
   background: #1a2540;
   padding: 16px 16px 0;
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -67,17 +68,17 @@ textarea, input, select {
 }
 .nav {
   display: flex;
-  gap: 2px; /* 버튼 사이 간격 축소 */
+  gap: 2px;
   width: 100%;
 }
 .nav button {
   flex: 1;
-  padding: 10px 0; /* 터치 영역 확보 */
+  padding: 10px 0;
   background: transparent;
   color: #8fa8d8;
   font-size: 12px;
   border-radius: 8px 8px 0 0;
-  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  white-space: nowrap;
 }
 .nav button.active {
   background: #4F86C6;
@@ -171,7 +172,7 @@ textarea, input, select {
   border-radius: 8px;
   padding: 6px 10px;
   border: 1px solid #fcc;
-  word-break: break-all; /* 텍스트가 박스 밖으로 탈출하는 것 방지 */
+  word-break: break-all;
 }
 .schedule-wrap {
   display: flex;
