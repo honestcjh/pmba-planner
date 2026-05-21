@@ -143,7 +143,10 @@ async function async function save(fn){
   try{await setDoc(REF,next);}catch(e){console.error(e);}
 }
 
-// 3초 안에 Firebase 응답 없으면 빈 데이터로 렌더링
+// 즉시 렌더링 (Firebase 응답 기다리지 않고)
+render();
+
+// 3초 안에 Firebase 응답 없으면 한번 더 렌더링
 const fallbackTimer = setTimeout(()=>{ render(); }, 3000);
 
 onSnapshot(REF, snap=>{
