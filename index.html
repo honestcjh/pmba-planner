@@ -6,34 +6,44 @@
 <meta name="theme-color" content="#1a2540"/>
 <title>KAIST MBA 수강계획</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+/* 💡 모든 요소의 마진, 패딩 초기화 및 가로 스크롤 방지 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: none; /* 시스템 폰트 크기로 인한 깨짐 방지 */
+}
 
-/* 💡 body 배경색을 연한 회색으로 통일하고, 가로로 삐져나가는 강제 여백을 원천 차단합니다. */
 body {
   background: #f6f7fb; 
   font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-  padding: 0;
-  margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
+  width: 100%;
 }
 
-button{cursor:pointer;font-family:inherit;border:none}
-textarea,input,select{font-family:inherit}
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+}
+textarea, input, select {
+  font-family: inherit;
+}
 
-/* 💡 핵심 수정: 모바일 기기에서는 가로폭 100%로 화면 좌우 끝까지 꽉 채웁니다. */
+/* 💡 핵심 수정: vw 단위를 버리고 width: 100%와 max-width 유연화로 화면에 무조건 밀착시킵니다. */
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   max-width: 100%;
   margin: 0 auto;
   background: #f6f7fb;
   overflow-x: hidden;
 }
 
-/* 💡 미디어 쿼리: 화면이 넓은 PC(데스크탑) 브라우저에서 볼 때만 가로 폭을 500px로 제한하고 가운데로 모읍니다. */
+/* 💡 PC(데스크탑) 크기에서만 모바일 폰 뷰 형태로 고정시킵니다. */
 @media (min-width: 500px) {
   #app {
     max-width: 500px;
@@ -41,32 +51,182 @@ textarea,input,select{font-family:inherit}
   }
 }
 
-.header{background:#1a2540;padding:16px 16px 0;position:sticky;top:0;z-index:100;width:100%}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.nav{display:flex;gap:4px}
-.nav button{flex:1;padding:8px 0;background:transparent;color:#8fa8d8;font-size:12px;border-radius:10px 10px 0 0}
-.nav button.active{background:#4F86C6;color:#fff;font-weight:700}
-.content{padding:14px;flex:1}
-.banner{background:linear-gradient(135deg,#1a2540,#2d4a8a);border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#fff}
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border:1.5px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.badge{font-size:9px;border-radius:4px;padding:1px 5px;font-weight:600}
-.progress-bar{background:#f0f0f0;border-radius:6px;height:7px;overflow:hidden}
-.progress-fill{height:100%;border-radius:6px;transition:width .4s}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end}
-.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px;width:100%}
-.chip{font-size:10px;border-radius:5px;padding:3px 7px;border-width:1px;border-style:solid}
-.member-card{background:#f8f8f8;border-radius:8px;padding:8px 10px;margin-bottom:6px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a2540;color:#fff;border-radius:20px;padding:10px 22px;font-size:13px;font-weight:600;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.25);white-space:nowrap}
-.conflict-box {margin-top:8px;background:#fff0f0;border-radius:8px;padding:6px 10px;border:1px solid #fcc}
-.schedule-wrap{display:flex;flex-wrap:wrap;gap:4px}
-input,select,textarea{width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid #ddd;font-size:14px;outline:none}
-textarea{resize:vertical;min-height:70px;font-size:13px;padding:10px}
-.btn-row{display:flex;gap:8px}
-.btn{padding:12px;border-radius:12px;font-size:14px;flex:1;cursor:pointer;border:none;font-family:inherit}
-.btn-primary{background:#1a2540;color:#fff;font-weight:700}
-.btn-secondary{background:#f0f0f0;color:#555}
-.rating-wrap{display:flex;flex-wrap:wrap;gap:6px}
-.rating-btn{font-size:11px;padding:4px 10px;border-radius:16px;cursor:pointer;border:none;font-family:inherit}
+.header {
+  background: #1a2540;
+  padding: 16px 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.nav {
+  display: flex;
+  gap: 2px; /* 버튼 사이 간격 축소 */
+  width: 100%;
+}
+.nav button {
+  flex: 1;
+  padding: 10px 0; /* 터치 영역 확보 */
+  background: transparent;
+  color: #8fa8d8;
+  font-size: 12px;
+  border-radius: 8px 8px 0 0;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+.nav button.active {
+  background: #4F86C6;
+  color: #fff;
+  font-weight: 700;
+}
+.content {
+  padding: 14px;
+  flex: 1;
+  width: 100%;
+}
+.banner {
+  background: linear-gradient(135deg, #1a2540, #2d4a8a);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  color: #fff;
+  width: 100%;
+}
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1.5px solid #eee;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  width: 100%;
+}
+.badge {
+  font-size: 9px;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: 600;
+}
+.progress-bar {
+  background: #f0f0f0;
+  border-radius: 6px;
+  height: 7px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width .4s;
+}
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+}
+.modal {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 24px;
+  width: 100%;
+}
+.chip {
+  font-size: 10px;
+  border-radius: 5px;
+  padding: 3px 7px;
+  border-width: 1px;
+  border-style: solid;
+}
+.member-card {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a2540;
+  color: #fff;
+  border-radius: 20px;
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 300;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  white-space: nowrap;
+}
+.conflict-box {
+  margin-top: 8px;
+  background: #fff0f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  border: 1px solid #fcc;
+  word-break: break-all; /* 텍스트가 박스 밖으로 탈출하는 것 방지 */
+}
+.schedule-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #ddd;
+  font-size: 14px;
+  outline: none;
+}
+textarea {
+  resize: vertical;
+  min-height: 70px;
+  font-size: 13px;
+  padding: 10px;
+}
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+.btn {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  flex: 1;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+.btn-primary {
+  background: #1a2540;
+  color: #fff;
+  font-weight: 700;
+}
+.btn-secondary {
+  background: #f0f0f0;
+  color: #555;
+}
+.rating-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.rating-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
 </style>
 </head>
 <body>
