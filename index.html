@@ -148,8 +148,7 @@ const ALL_COURSES = [
 
 function toMin(t){const[h,m]=t.split(":");return+h*60+ +m;}
 function parseRange(str){const m=str.match(/(\d{1,2}:\d{2})/g);if(!m||m.length<2)return null;return{s:toMin(m[0]),e:toMin(m[1])};}
-/* 💡 오타(Dekker 키워드) 완전 교정 완료 */
-function conflicts(cid,myIds){const a=COURSES.find(c=>c.id===cid);if(!a)return[];return myIds.filter(id=>id!==cid).flatMap(id=>{const b=COURSES.find(c=>c.id===id);if(!b)return[];const dates=a.schedule.filter(sa=>b.schedule.some(sb=>sa.date===sb.date&&(()=> {const ra=parseRange(sa.time),rb=parseRange(sb.time);return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;})())).map(s=>s.date);return dates.length?[{course:b,dates}]:[];});}
+function conflicts(cid,myIds){const a=COURSES.find(c=>c.id===cid);if(!a)return[];return myIds.filter(id=>id!==cid).flatMap(id=>{const b=COURSES.find(c=>c.id===id);if(!b)return[];const dates=a.schedule.filter(sa=>b.schedule.some(sb=>sa.date===sb.date&&(()=>{const ra=parseRange(sa.time),rb=parseRange(sb.time);return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;})())).map(s=>s.date);return dates.length?[{course:b,dates}]:[];});}
 function fmtMD(s){const p=s.split("-");return p[1]+"/"+p[2];}
 function pad(n){return String(n).padStart(2,"0");}
 
@@ -194,15 +193,24 @@ async function doLogin(){
 }
 function doLogout(){state.user=null;localStorage.removeItem("kaist_user");render();}
 async function doAdd(){
+  if(!state.user) {
+    state.addModal = null;
+    state.showLogin = true;
+    render();
+    showToast("로그인이 필요합니다.");
+    return;
+  }
   const cid=state.addModal.courseId;
   await commit(d=>{if(!d.selections.find(s=>s.userId===state.user.id&&s.courseId===cid))d.selections.push({userId:state.user.id,courseId:cid,reason:state.addForm.reason,rating:state.addForm.rating,addedAt:new Date().toISOString()});});
   state.addModal=null;showToast("수강계획에 추가했습니다!");
 }
 async function doRemove(cid){
+  if(!state.user) return;
   await commit(d=>{const i=d.selections.findIndex(s=>s.userId===state.user.id&&s.courseId===cid);if(i>=0)d.selections.splice(i,1);});
   showToast("수강계획에서 제거했습니다.");
 }
 async function doUpdateField(cid,field,val){
+  if(!state.user) return;
   await commit(d=>{const s=d.selections.find(s=>s.userId===state.user.id&&s.courseId===cid);if(s)s[field]=val;});
   showToast("저장했습니다.");
 }
@@ -269,7 +277,14 @@ function renderCard(course){
       ]),
       el("button",{disabled:state.busy,
         style:{background:sel?course.color:"#f0f0f0",color:sel?"#fff":"#555",borderRadius:"20px",fontSize:"12px",padding:"5px 12px",fontWeight:"600",flexShrink:"0",opacity:state.busy?"0.6":"1"},
-        onClick:()=>sel?doRemove(course.id):(state.addForm={reason:"",rating:""},state.addModal={courseId:course.id},render())},
+        onClick:()=>{
+          if(!state.user){
+            state.showLogin=true; render();
+            showToast("로그인 후 수강신청을 담아보세요!");
+          } else {
+            sel?doRemove(course.id):(state.addForm={reason:"",rating:""},state.addModal={courseId:course.id},render());
+          }
+        }},
         sel?"✓ 담음":"+ 담기"),
     ]),
     cf.length?el("div",{class:"conflict-box"},[
@@ -341,14 +356,14 @@ function renderCalendar(){
   const{calYear:y,calMonth:m}=state;
   const days=new Date(y,m+1,0).getDate(),fd=new Date(y,m,1).getDay();
   const ms=y+"-"+pad(m+1);
-  const ids=state.user?myIds():COURSES.map(c=>c.id);
+  /* 💡 버그 수정: 로그인이 안 되어 있을 때는 전체 노출이 아니라 빈 화면([])으로 안전하게 마스킹 처리합니다 */
+  const ids=state.user?myIds():[];
   return el("div",{},[
     el("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"12px"}},[
       el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px"},onClick:()=>{m===0?(state.calYear--,state.calMonth=11):state.calMonth--;render();}},"◀"),
       el("b",{style:{fontSize:"15px"}},y+"년 "+(m+1)+"월"),
       el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px"},onClick:()=>{m===11?(state.calYear++,state.calMonth=0):state.calMonth++;render();}},"▶"),
     ]),
-    /* 💡 일요일 축소 가로 레이아웃 설정 (0.7fr : 1fr 비율 구조) */
     el("div",{style:{display:"grid",gridTemplateColumns:"0.7fr 1fr 1fr 1fr 1fr 1fr 1fr",gap:"2px",marginBottom:"4px"}},[
       ...["일","월","화","수","목","금","토"].map((d,i)=>el("div",{style:{textAlign:"center",fontSize:"11px",fontWeight:"700",color:i===0?"#e03":i===6?"#47a":"#666",padding:"2px 0"}},d)),
       ...Array.from({length:fd},(_,i)=>el("div",{key:"e"+i},[])),
@@ -360,7 +375,6 @@ function renderCalendar(){
         return el("div",{style:{minHeight:"54px",background:isReg?"#fffbe6":"#fff",border:isReg?"1.5px solid #f5c518":"1px solid #eee",borderRadius:"6px",padding:"2px 3px",overflow:"hidden"}},[
           el("div",{style:{fontSize:"11px",fontWeight:isReg?"700":"400",color:di===0?"#e03":di===6?"#47a":"#333"}},String(d)),
           isReg?el("div",{style:{fontSize:"8px",color:"#b8860b"}},"수강신청"):null,
-          /* 💡 과목명 텍스트 박스가 가로 그리드를 강제로 밀지 못하도록 삼중 잠금(말줄임표 및 가로폭 고정) */
           ...cs.slice(0,3).map(c=>el("div",{style:{fontSize:"8px",background:c.color,color:"#fff",borderRadius:"3px",padding:"1px 2px",marginTop:"1px",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis",width:"100%"}},c.name)),
           cs.length>3?el("div",{style:{fontSize:"8px",color:"#999"}},"+"+String(cs.length-3)):null,
         ]);
@@ -373,7 +387,6 @@ function renderCalendar(){
   ]);
 }
 
-/* 💡 "🏫 전체과정" 탭 데이터 연동 구조 복원 */
 function renderAll(){
   const depts=["전체",...new Set(ALL_COURSES.map(c=>c.dept))];
   const filtered=state.allDept==="전체"?ALL_COURSES:ALL_COURSES.filter(c=>c.dept===state.allDept);
