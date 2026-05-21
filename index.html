@@ -1,211 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
-<!-- 💡 모바일 브라우저 상단 상태바 색상을 헤더 남색과 일치시켜 아이콘이 흰색으로 보이게 만듭니다 -->
+<!-- 💡 모바일 브라우저 상단 상태바 색상을 헤더 남색과 일치시켜 아이콘이 흰색으로 보이게 합니다 -->
 <meta name="theme-color" content="#1a2540"/>
 <title>KAIST MBA 수강계획</title>
 <style>
-/* 💡 상하좌우 여백을 완전히 없애고 모바일 화면에 밀착시킵니다 */
-*{
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-body {
-  background: #1a2540; /* 💡 화면 바깥 여백이 튀지 않도록 헤더와 같은 톤으로 베이스를 깝니다 */
-  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-  padding: 0;
-  margin: 0;
-}
-button {
-  cursor: pointer;
-  font-family: inherit;
-  border: none;
-}
-textarea, input, select {
-  font-family: inherit;
-}
-
-/* 💡 메인 컨테이너: 상하좌우 여백을 없애고 꽉 차게 만듭니다 */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a2540;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;min-height:100vh}
+button{cursor:pointer;font-family:inherit;border:none}
+textarea,input,select{font-family:inherit}
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  max-width: 500px; /* 💡 데스크탑에서 볼 때만 모바일 크기로 고정 */
+  max-width: 500px;
   margin: 0 auto;
-  background: #f6f7fb; /* 💡 실제 앱 콘텐츠 배경색 */
+  background: #f6f7fb;
   box-shadow: 0 0 20px rgba(0,0,0,0.15);
 }
-
-.header {
-  background: #1a2540;
-  padding: 16px 16px 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.nav {
-  display: flex;
-  gap: 4px;
-}
-.nav button {
-  flex: 1;
-  padding: 8px 0;
-  background: transparent;
-  color: #8fa8d8;
-  font-size: 12px;
-  border-radius: 10px 10px 0 0;
-}
-.nav button.active {
-  background: #4F86C6;
-  color: #fff;
-  font-weight: 700;
-}
-.content {
-  padding: 14px;
-  flex: 1;
-}
-.banner {
-  background: linear-gradient(135deg, #1a2540, #2d4a8a);
-  border-radius: 12px;
-  padding: 12px 14px;
-  margin-bottom: 14px;
-  color: #fff;
-}
-.card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 10px;
-  border: 1.5px solid #eee;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-.badge {
-  font-size: 9px;
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-weight: 600;
-}
-.progress-bar {
-  background: #f0f0f0;
-  border-radius: 6px;
-  height: 7px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  border-radius: 6px;
-  transition: width .4s;
-}
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
-  display: flex;
-  align-items: flex-end;
-}
-.modal {
-  background: #fff;
-  border-radius: 20px 20px 0 0;
-  padding: 24px;
-  width: 100%;
-}
-.chip {
-  font-size: 10px;
-  border-radius: 5px;
-  padding: 3px 7px;
-  border-width: 1px;
-  border-style: solid;
-}
-.member-card {
-  background: #f8f8f8;
-  border-radius: 8px;
-  padding: 8px 10px;
-  margin-bottom: 6px;
-}
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1a2540;
-  color: #fff;
-  border-radius: 20px;
-  padding: 10px 22px;
-  font-size: 13px;
-  font-weight: 600;
-  z-index: 300;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-  white-space: nowrap;
-}
-.conflict-box {
-  margin-top: 8px;
-  background: #fff0f0;
-  border-radius: 8px;
-  padding: 6px 10px;
-  border: 1px solid #fcc;
-}
-.schedule-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-input, select, textarea {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  border: 1.5px solid #ddd;
-  font-size: 14px;
-  outline: none;
-}
-textarea {
-  resize: vertical;
-  min-height: 70px;
-  font-size: 13px;
-  padding: 10px;
-}
-.btn-row {
-  display: flex;
-  gap: 8px;
-}
-.btn {
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  flex: 1;
-  cursor: pointer;
-  border: none;
-  font-family: inherit;
-}
-.btn-primary {
-  background: #1a2540;
-  color: #fff;
-  font-weight: 700;
-}
-.btn-secondary {
-  background: #f0f0f0;
-  color: #555;
-}
-.rating-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.rating-btn {
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 16px;
-  cursor: pointer;
-  border: none;
-  font-family: inherit;
-}
+.header{background:#1a2540;padding:16px 16px 0;position:sticky;top:0;z-index:100}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.nav{display:flex;gap:4px}
+.nav button{flex:1;padding:8px 0;background:transparent;color:#8fa8d8;font-size:12px;border-radius:10px 10px 0 0}
+.nav button.active{background:#4F86C6;color:#fff;font-weight:700}
+.content{padding:14px;flex:1}
+.banner{background:linear-gradient(135deg,#1a2540,#2d4a8a);border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#fff}
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border:1.5px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.badge{font-size:9px;border-radius:4px;padding:1px 5px;font-weight:600}
+.progress-bar{background:#f0f0f0;border-radius:6px;height:7px;overflow:hidden}
+.progress-fill{height:100%;border-radius:6px;transition:width .4s}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px;width:100%}
+.chip{font-size:10px;border-radius:5px;padding:3px 7px;border-width:1px;border-style:solid}
+.member-card{background:#f8f8f8;border-radius:8px;padding:8px 10px;margin-bottom:6px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a2540;color:#fff;border-radius:20px;padding:10px 22px;font-size:13px;font-weight:600;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.25);white-space:nowrap}
+.conflict-box {margin-top:8px;background:#fff0f0;border-radius:8px;padding:6px 10px;border:1px solid #fcc}
+.schedule-wrap{display:flex;flex-wrap:wrap;gap:4px}
+input,select,textarea{width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid #ddd;font-size:14px;outline:none}
+textarea{resize:vertical;min-height:70px;font-size:13px;padding:10px}
+.btn-row{display:flex;gap:8px}
+.btn{padding:12px;border-radius:12px;font-size:14px;flex:1;cursor:pointer;border:none;font-family:inherit}
+.btn-primary{background:#1a2540;color:#fff;font-weight:700}
+.btn-secondary{background:#f0f0f0;color:#555}
+.rating-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.rating-btn{font-size:11px;padding:4px 10px;border-radius:16px;cursor:pointer;border:none;font-family:inherit}
 </style>
 </head>
+<body>
+
+<div id="app" style="padding:40px; text-align:center; color:#fff; font-size:15px;">불러오는 중...</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyD5Kj4l-SGyyhy3dogG--GLLq1THYH93I8",
+  authDomain:"pmba-planner.firebaseapp.com",
+  projectId:"pmba-planner",
+  storageBucket:"pmba-planner.firebasestorage.app",
+  messagingSenderId:"207973377200",
+  appId:"1:207973377200:web:fe53f97c5e5eae8fe94775"
+});
+const db = getFirestore(app);
+const DOC = doc(db, "planner", "data");
+
+// ── 상수 ──────────────────────────────────────────────
+const PROGRAMS = ["프로페셔널MBA","카이스트MBA","이그제큐티브MBA","금융MBA","디지털금융MBA","금융공학프로그램","정보경영프로그램","임팩트MBA"];
+const COHORTS  = ["14기","13기","12기"];
+const RATINGS  = ["⭐ 매우 추천","👍 추천","😐 보통","👎 비추천"];
+const WC = {"1~4주":"#4F86C6","5~8주":"#E07B54","1~8주":"#9B6BB5"};
+const DC = {"카이스트MBA":"#2196F3","이그제큐티브MBA":"#9C27B0","임팩트MBA":"#4CAF50","금융MBA(디지털금융MBA)":"#FF9800","디지털금융MBA":"#F44336","금융공학프로그램":"#795548","정보경영프로그램":"#00BCD4"};
+
+function schedSummary(sch){
+  const days=[...new Set(sch.map(s=>s.day))].join("·");
+  const ev=sch.some(s=>parseInt(s.time)>=18), am=sch.some(s=>parseInt(s.time)<12&&parseInt(s.time)>=6), pm=sch.some(s=>parseInt(s.time)>=12&&parseInt(s.time)<18);
+  const t=[ev?"야간":"",am?"오전":"",pm?"오후":""].filter(Boolean).join("+");
+  return days+" / "+t;
+}
+
+const COURSES = [
+  {id:"BIZ60014",code:"BIZ.60014",name:"신사업개발",professor:"장대철",capacity:60,weeks:"1~4주",color:"#4F86C6",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"",schedule:[{date:"2026-06-30",day:"화",time:"19:00~22:00"},{date:"2026-07-02",day:"목",time:"19:00~22:00"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-21",day:"화",time:"19:00~22:00"},{date:"2026-07-23",day:"목",time:"19:00~22:00"}]},
+  {id:"BIZ60022",code:"BIZ.60022",name:"협상론",professor:"이지환",capacity:60,weeks:"5~8주",color:"#E07B54",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"",schedule:[{date:"2026-07-28",day:"화",time:"19:00~22:00"},{date:"2026-07-30",day:"목",time:"19:00~22:00"},{date:"2026-08-01",day:"토",time:"09:00~12:00"},{date:"2026-08-04",day:"화",time:"19:00~22:00"},{date:"2026-08-06",day:"목",time:"19:00~22:00"},{date:"2026-08-08",day:"토",time:"09:00~12:00"},{date:"2026-08-11",day:"화",time:"19:00~22:00"},{date:"2026-08-13",day:"목",time:"19:00~22:00"}]},
+  {id:"BIZ60059",code:"BIZ.60059",name:"기술혁신과 비즈니스 전략",professor:"김상원",capacity:75,weeks:"1~4주",color:"#6BAE75",cross:false,eligibility:"PMBA Only",remarks:"대전 본원",schedule:[{date:"2026-06-29",day:"월",time:"09:00~18:00"},{date:"2026-06-30",day:"화",time:"09:00~18:00"},{date:"2026-07-01",day:"수",time:"09:00~18:00"}]},
+  {id:"BIZ60063",code:"BIZ.60063",name:"B2B 마케팅",professor:"김민기",capacity:60,weeks:"1~4주",color:"#9B6BB5",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"7.18(토) 휴강",schedule:[{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-11",day:"토",time:"09:00~12:00"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-21",day:"화",time:"19:00~22:00"},{date:"2026-07-23",day:"목",time:"19:00~22:00"},{date:"2026-07-25",day:"토",time:"09:00~12:00"}]},
+  {id:"BIZ60093",code:"BIZ.60093",name:"인공지능 비즈니스 전략",professor:"한상필",capacity:60,weeks:"1~8주",color:"#D4A843",cross:false,eligibility:"PMBA/IMMS Only → 변경기간 All",remarks:"3주차 휴강(7.14화·7.16목·7.18토) / PMBA·IMMS 공동수강",schedule:[{date:"2026-06-30",day:"화",time:"19:00~22:00"},{date:"2026-07-02",day:"목",time:"19:00~22:00"},{date:"2026-07-04",day:"토",time:"09:00~16:30"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-11",day:"토",time:"09:00~16:30"},{date:"2026-07-21",day:"화",time:"19:00~22:00"},{date:"2026-07-23",day:"목",time:"19:00~22:00"},{date:"2026-07-25",day:"토",time:"09:00~16:30"},{date:"2026-07-28",day:"화",time:"19:00~22:00"},{date:"2026-07-30",day:"목",time:"19:00~22:00"},{date:"2026-08-01",day:"토",time:"09:00~16:30"}]},
+  {id:"BIZ80007",code:"BIZ.80007",name:"해외현장연수 I",professor:"김상원",capacity:null,weeks:"1~4주",color:"#E05C7A",cross:false,eligibility:"PMBA Only",remarks:"Bocconi University (이탈리아) / 짝수해만",schedule:[{date:"2026-06-22",day:"월",time:"09:00~18:00"},{date:"2026-06-23",day:"화",time:"09:00~18:00"},{date:"2026-06-24",day:"수",time:"09:00~18:00"},{date:"2026-06-25",day:"목",time:"09:00~18:00"},{date:"2026-06-26",day:"금",time:"09:00~18:00"}]},
+  {id:"BAF50002PA",code:"BAF.50002 PA",name:"재무회계 (PA반)",professor:"서호준",capacity:52,weeks:"1~4주",color:"#5BA8A0",cross:false,eligibility:"PMBA Only",remarks:"",schedule:[{date:"2026-06-24",day:"화",time:"19:00~22:00"},{date:"2026-06-26",day:"목",time:"19:00~22:00"},{date:"2026-06-28",day:"토",time:"09:00~16:30"},{date:"2026-07-01",day:"화",time:"19:00~22:00"},{date:"2026-07-03",day:"목",time:"19:00~22:00"},{date:"2026-07-05",day:"토",time:"09:00~16:30"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-11",day:"토",time:"09:00~16:30"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-18",day:"토",time:"09:00~16:30"}]},
+  {id:"BAF50002PB",code:"BAF.50002 PB",name:"재무회계 (PB반)",professor:"홍필립기재",capacity:52,weeks:"5~8주",color:"#7B9ED9",cross:false,eligibility:"PMBA Only",remarks:"",schedule:[{date:"2026-07-28",day:"화",time:"19:00~22:00"},{date:"2026-07-30",day:"목",time:"19:00~22:00"},{date:"2026-08-01",day:"토",time:"09:00~16:30"},{date:"2026-08-04",day:"화",time:"19:00~22:00"},{date:"2026-08-06",day:"목",time:"19:00~22:00"},{date:"2026-08-08",day:"토",time:"09:00~16:30"},{date:"2026-08-11",day:"화",time:"19:00~22:00"},{date:"2026-08-13",day:"목",time:"19:00~22:00"},{date:"2026-08-15",day:"토",time:"09:00~16:30"},{date:"2026-08-18",day:"화",time:"19:00~22:00"},{date:"2026-08-20",day:"목",time:"19:00~22:00"},{date:"2026-08-22",day:"토",time:"09:00~16:30"}]},
+  {id:"BAF60012",code:"BAF.60012",name:"사모투자",professor:"Daniel Rettl",capacity:50,weeks:"1~4주",color:"#C47F3A",cross:true,eligibility:"6.25(목) 09:30부터 All 개방",remarks:"DFMBA/FMBA/MFE 과목 → 수강변경기간 All",schedule:[{date:"2026-06-29",day:"월",time:"19:00~22:00"},{date:"2026-07-01",day:"수",time:"19:00~22:00"},{date:"2026-07-04",day:"토",time:"13:00~16:00"},{date:"2026-07-06",day:"월",time:"19:00~22:00"},{date:"2026-07-08",day:"수",time:"19:00~22:00"},{date:"2026-07-10",day:"금",time:"19:00~22:00"},{date:"2026-07-13",day:"월",time:"19:00~22:00"},{date:"2026-07-15",day:"수",time:"19:00~22:00"}]},
+];
+
+const ALL_COURSES = [
+  {dept:"카이스트MBA",code:"BIZ.50085",name:"소셜 미디어 및 네트워크 분석",professor:"박희목",days:"월~목",time:"09:00~13:00",weeks:"1~4주",capacity:40,remarks:"K/TMBA Only → 변경기간 All / 7.6~7.23"},
+  {dept:"카이스트MBA",code:"BIZ.80004",name:"해외현장실습",professor:"학과교수",days:"월~금",time:"09:00~18:00",weeks:"1~4주",capacity:null,remarks:"K/TMBA Only / IE Business School (스페인) 6.22~7.3"},
+  {dept:"이그제큐티브MBA",code:"BIZ.69900 XA",name:"경영특수논제 <AI와 비즈니스 혁신>",professor:"윤여선",days:"금·토",time:"15:00~21:00 / 09:00~16:00",weeks:"5~8주",capacity:null,remarks:"EMBA Only / 8.14~8.22 예정"},
+  {dept:"이그제큐티브MBA",code:"BIZ.69900 XB",name:"경영특수논제 <전략적 미래예측>",professor:"서용석",days:"금·토",time:"15:00~21:00 / 09:00~16:00",weeks:"5~8주",capacity:null,remarks:"EMBA Only / 7.31~8.8"},
+  {dept:"이그제큐티브MBA",code:"BIZ.80005",name:"해외현장연구 I (1년차)",professor:"윤여선",days:"월~금",time:"09:00~17:30",weeks:"1~4주",capacity:null,remarks:"EMBA Only / Bocconi (이탈리아) 6.28~7.11"},
+  {dept:"이그제큐티브MBA",code:"BIZ.80006",name:"해외현장연구 II (2년차)",professor:"윤여선",days:"월~금",time:"09:00~17:30",weeks:"1~4주",capacity:null,remarks:"EMBA Only / Bocconi (이탈리아) 6.14~6.27"},
+  {dept:"임팩트MBA",code:"BIZ.60027",name:"임팩트벤처 시장조사 및 BM개발",professor:"장대철",days:"화·목",time:"13:00~16:00",weeks:"5~8주",capacity:null,remarks:"IMBA Only → 변경기간 All / 7.28~8.20"},
+  {dept:"임팩트MBA",code:"BIZ.80003",name:"임팩트벤처 현장연수",professor:"진병채",days:"월~금",time:"09:00~18:00",weeks:"1~4주",capacity:null,remarks:"IMBA Only / Silicon Valley (미국) 6.28~7.4"},
+  {dept:"금융MBA(디지털금융MBA)",code:"BAF.60012",name:"사모투자",professor:"Daniel Rettl",days:"월·수·금·토",time:"19:00~22:00 / 13:00~16:00",weeks:"1~4주",capacity:50,remarks:"DFMBA/FMBA/MFE → 6.25(목) 09:30부터 All / 6.29~7.15"},
+  {dept:"디지털금융MBA",code:"BAF.50000",name:"금융윤리와 사회책임",professor:"권민수",days:"토",time:"09:00~12:00",weeks:"1~8주",capacity:50,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.50007",name:"금융 데이터베이스",professor:"김아현",days:"화·목",time:"19:00~22:00",weeks:"5~8주",capacity:50,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.50023 DA",name:"금융 데이터 마이닝 (A반)",professor:"김아현",days:"월·수",time:"19:00~22:00",weeks:"1~4주",capacity:45,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.50023 DB",name:"금융 데이터 마이닝 (B반)",professor:"김아현",days:"화·목",time:"19:00~22:00",weeks:"1~4주",capacity:45,remarks:"DFMBA Only 1년차 필수"},
+  {dept:"디지털금융MBA",code:"BAF.69906 D",name:"디지털금융특수논제 <디지털자산>",professor:"김서영",days:"월·수",time:"19:00~22:00",weeks:"5~8주",capacity:50,remarks:"DFMBA Only → 변경기간 All"},
+  {dept:"디지털금융MBA",code:"BAF.94368",name:"글로벌금융 현장연구",professor:"김경국",days:"월~목",time:"09:00~18:00",weeks:"1~4주",capacity:55,remarks:"DFMBA Only / UCL (영국) 6.22~6.25"},
+  {dept:"금융공학프로그램",code:"BAF.50002 Q",name:"재무회계",professor:"정부천",days:"월~목",time:"09:00~12:00",weeks:"5~8주",capacity:null,remarks:"MFE Only / 7.20~8.13"},
+  {dept:"정보경영프로그램",code:"BIZ.94304",name:"IT경영 해외현장연구",professor:"강금석",days:"월~금",time:"09:00~18:00",weeks:"1~8주",capacity:null,remarks:"IMMS Only / Santa Clara Univ (미국) 7.11~7.19"},
+];
+
+// ── 유틸 ──────────────────────────────────────────────
+function toMin(t){const[h,m]=t.split(":");return+h*60+ +m;}
+function parseRange(str){const m=str.match(/(\d{1,2}:\d{2})/g);if(!m||m.length<2)return null;return{s:toMin(m[0]),e:toMin(m[1])};}
+function getConflicts(cid,ids){
+  const a=COURSES.find(c=>c.id===cid);if(!a)return[];
+  return ids.filter(id=>id!==cid).flatMap(id=>{
+    const b=COURSES.find(c=>c.id===id);if(!b)return[];
+    const dates=a.schedule.filter(sa=>b.schedule.some(sb=>{
+      if(sa.date!==sb.date)return false;
+      const ra=parseRange(sa.time),rb=parseRange(sb.time);
+      return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;
+    })).map(s=>s.date);
+    return dates.length?[{course:b,dates}]:[];
+  });
+}
+function fmtMD(s){const p=s.split("-");return p[1]+"/"+p[2];}
+function pad(n){return String(n).padStart(2,"0");}
+
+// ── State ──────────────────────────────────────────────
+let S={
+  data:{users:[],selections:[]},
+  user:(() => { try{ return JSON.parse(localStorage.getItem("ku")||"null"); }catch(e){ return null; } })(),
+  view:"courses", expanded:null, calYear:2026, calMonth:4, allDept:"전체", // 5월 표시를 위해 4로 고정 (JS 달은 0부터)
+  showLogin:false, loginForm:{program:"프로페셔널MBA",cohort:"14기",name:""},
+  addModal:null, addForm:{reason:"",rating:""},
+  toast:"", toastTimer:null, busy:false
+};
+
+// ── Firebase ──────────────────────────────────────────
+async function save(data){
+  try{ await setDoc(DOC, data); return true; }
+  catch(e){ alert("저장 오류: "+e.message); return false; }
+}
+
+async function commit(fn){
+  if(S.busy) return;
+  S.busy=true;
+  const next={ users:[...S.data.users.map(u=>({...u}))], selections:[...S.data.selections.map(s=>({...s}))] };
+  fn(next);
+  S.data=next;
+  render();
+  await save(next);
+  S.busy=false;
+  render();
+}
+
+// ── 토스트 ────────────────────────────────────────────
+function toast(msg){
+  S.toast=msg; render();
+  if(S.toastTimer)clearTimeout(S.toastTimer);
+  S.toastTimer=setTimeout(()=>{S.toast="";render();},2400);
+}
+
+// ── 액션 ──────────────────────────────────────────────
+async function doLogin(){
+  const{program,cohort,name}=S.loginForm; if(!name.trim())return;
+  const uid=[program,cohort,name.trim()].join("|");
+  const u={id:uid,program,cohort,name:name.trim()};
+  await commit(d=>{ if(!d.users.find(x=>x.id===uid)) d.users.push(u); });
+  S.user=u; try{localStorage.setItem("ku",JSON.stringify(u));}catch(e){}
+  S.showLogin=false; toast(u.name+"님, 환영합니다!");
+}
+function doLogout(){ S.user=null; try{localStorage.removeItem("ku");}catch(e){} render(); }
+async function doAdd(){
+  const cid=S.addModal.courseId;
+  await commit(d=>{ if(!d.selections.find(s=>s.userId===S.user.id&&s.courseId===cid)) d.selections.push({userId:S.user.id,courseId:cid,reason:S.addForm.reason,rating:S.addForm.rating,addedAt:new Date().toISOString()}); });
+  S.addModal=null; toast("수강계획에 추가했습니다!");
+}
+async function doRemove(cid){
+  await commit(d=>{ const i=d.selections.findIndex(s=>s.userId===S.user.id&&s.courseId===cid); if(i>=0)d.selections.splice(i,1); });
+  toast("수강계획에서 제거했습니다.");
+}
+async function doField(cid,field,val){
+  await commit(d=>{ const s=d.selections.find(s=>s.userId===S.user.id&&s.courseId===cid); if(s)s[field]=val; });
+  toast("저장했습니다.");
+}
+
+// ── 셀렉터 ────────────────────────────────────────────
+const myIds=()=>S.user?S.data.selections.filter(s=>s.userId===S.user.id).map(s=>s.courseId):[];
+const isSel=cid=>myIds().includes(cid);
+const getSels=cid=>S.data.selections.filter(s=>s.courseId===cid);
+const getMySel=cid=>S.user?S.data.selections.find(s=>s.userId===S.user.id&&s.courseId===cid):null;
+const getUser=id=>S.data.users.find(u=>u.id===id);
+
+// ── DOM 헬퍼 ──────────────────────────────────────────
+function el(tag, attrs, children){
+  attrs=attrs||{}; children=children||[];
+  const e=document.createElement(tag);
+  for(const[k,v] of Object.entries(attrs)){
+    if(k==="style"&&typeof v==="object") Object.assign(e.style,v);
+    else if(k.startsWith("on")) e.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k==="class") e.className=v;
+    else e.setAttribute(k,v);
+  }
+  for(const c of (Array.isArray(children)?children:[children])){
+    if(c==null||c===false) continue;
+    e.append(typeof c==="string"?document.createTextNode(c):c);
+  }
+  return e;
+}
+
+// ── 렌더 함수들 ───────────────────────────────────────
+function renderHeader(){
+  return el("div",{class:"header"},[
+    el("div",{class:"header-top"},[
+      el("div",{},[
+        el("div",{style:{color:"#fff",fontWeight:"800",fontSize:"15px"}},"KAIST MBA"),
+        el("div",{style:{color:"#8fa8d8",fontSize:"11px"}},"2026 여름학기 수강계획 공유"),
+      ]),
+      S.user
+        ? el("div",{style:{display:"flex",alignItems:"center",gap:"8px"}},[
+            el("span",{style:{color:"#a0c4ff",fontSize:"12px"}},S.user.name),
+            el("button",{style:{background:"rgba(255,255,255,.13)",color:"#ccc",borderRadius:"14px",fontSize:"11px",padding:"4px 10px"},onClick:doLogout},"로그아웃"),
+          ])
+        : el("button",{style:{background:"#4F86C6",color:"#fff",borderRadius:"16px",fontSize:"12px",padding:"6px 14px"},onClick:()=>{S.showLogin=true;render();}},"로그인"),
+    ]),
+    el("div",{class:"nav"},[
+      ["courses","📚 과목"],["calendar","📅 달력"],["members","👥 원우"],["all","🏫 전체과정"]
+    ].map(([v,l])=>el("button",{class:S.view===v?"active":"",onClick:()=>{S.view=v;render();}},l))),
+  ]);
+}
+
+function renderCard(course){
+  const sels=getSels(course.id), sel=isSel(course.id);
+  const ids=myIds();
+  const pct=course.capacity?Math.round(sels.length/course.capacity*100):null;
+  const expanded=S.expanded===course.id;
+  const mySel=getMySel(course.id);
+  const cf=sel?getConflicts(course.id,ids):[];
+
+  return el("div",{class:"card",style:{border:sel?"2px solid "+course.color:"1.5px solid #eee",boxShadow:sel?"0 2px 12px "+course.color+"33":"0 1px 4px rgba(0,0,0,.06)"}},[
+    el("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:"8px"}},[
+      el("div",{style:{flex:"1",cursor:"pointer"},onClick:()=>{S.expanded=expanded?null:course.id;render();}},[
+        el("div",{style:{display:"flex",alignItems:"center",gap:"5px",flexWrap:"wrap"}},[
+          el("span",{style:{fontSize:"13px",fontWeight:"700",color:"#222"}},course.name),
+          course.cross?el("span",{class:"badge",style:{background:"#f0e6ff",color:"#7b4fb5"}},"타과정"):null,
+          el("span",{class:"badge",style:{background:(WC[course.weeks]||"#888")+"22",color:WC[course.weeks]||"#888"}},course.weeks),
+          el("span",{class:"badge",style:{background:"#f0f0f0",color:"#555"}},schedSummary(course.schedule)),
+          cf.length?el("span",{class:"badge",style:{background:"#fff0f0",color:"#d00"}},"⚠ 시간겹침"):null,
+        ]),
+        el("div",{style:{fontSize:"11px",color:"#888",marginTop:"2px"}},course.code+" | "+course.professor+" 교수"),
+        el("div",{style:{fontSize:"11px",color:"#aaa"}},course.eligibility),
+      ]),
+      el("button",{
+        style:{background:sel?course.color:"#f0f0f0",color:sel?"#fff":"#555",borderRadius:"20px",fontSize:"12px",padding:"5px 12px",fontWeight:"600",flexShrink:"0",border:"none",cursor:"pointer"},
+        onClick:()=>{ if(sel){ doRemove(course.id); } else { S.addForm={reason:"",rating:""}; S.addModal={courseId:course.id}; render(); } }
+      }, sel?"✓ 담음":"+ 담기"),
+    ]),
+    cf.length?el("div",{class:"conflict-box"},[
+      el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#c00",marginBottom:"3px"}},"⚠ 아래 과목과 시간이 겹쳐요"),
+      ...cf.map(c=>el("div",{style:{fontSize:"11px",color:"#c00"}},"· "+c.course.name+" ("+c.dates.map(fmtMD).join(", ")+")"))
+    ]):null,
+    el("div",{style:{marginTop:"10px"}},[
+      el("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:"3px"}},[
+        el("span",{style:{fontSize:"11px",color:"#555"}},["관심인원 ",el("b",{},[String(sels.length)+"명"])]),
+        course.capacity?el("span",{style:{fontSize:"11px",color:"#999"}},"정원 "+course.capacity+"명"+(pct!==null?" ("+pct+"%)":"")):null,
+      ]),
+      course.capacity?el("div",{class:"progress-bar"},[
+        el("div",{class:"progress-fill",style:{width:Math.min(pct,100)+"%",background:pct>80?"#e03":pct>50?"#f5a623":course.color}}),
+      ]):null,
+    ]),
+    expanded?el("div",{style:{marginTop:"12px",borderTop:"1px solid #f0f0f0",paddingTop:"12px"}},[
+      el("div",{style:{marginBottom:"10px"}},[
+        el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"5px"}},"📅 강의 일정"),
+        el("div",{class:"schedule-wrap"},course.schedule.map(sc=>
+          el("div",{class:"chip",style:{background:course.color+"15",color:course.color,borderColor:course.color+"44"}},fmtMD(sc.date)+"("+sc.day+") "+sc.time)
+        )),
+        course.remarks?el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"5px"}},"⚠ "+course.remarks):null,
+      ]),
+      el("div",{style:{marginBottom:"10px"}},[
+        el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"5px"}},"👥 참여 예정자 ("+sels.length+"명)"),
+        sels.length===0
+          ?el("div",{style:{fontSize:"11px",color:"#bbb"}},"아직 없어요!")
+          :el("div",{},sels.map(s=>{
+              const u=getUser(s.userId); if(!u)return null;
+              return el("div",{class:"member-card"},[
+                el("div",{style:{display:"flex",alignItems:"center",gap:"6px",flexWrap:"wrap"}},[
+                  el("span",{style:{fontSize:"12px",fontWeight:"600",color:"#222"}},u.name),
+                  el("span",{style:{fontSize:"10px",color:"#888"}},u.program+" "+u.cohort),
+                  s.rating?el("span",{style:{fontSize:"10px",background:"#f0f0f0",borderRadius:"6px",padding:"1px 6px"}},s.rating):null,
+                ]),
+                s.reason?el("div",{style:{fontSize:"11px",color:"#555",marginTop:"3px"}},"💬 "+s.reason):null,
+              ]);
+            })),
+      ]),
+      S.user&&sel&&mySel?el("div",{style:{background:"#f8f8f8",borderRadius:"10px",padding:"10px"}},[
+        el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"8px"}},"✏️ 내 정보 수정"),
+        el("div",{style:{marginBottom:"8px"}},[
+          el("div",{style:{fontSize:"11px",color:"#666",marginBottom:"4px"}},"수강 이유 / 메모"),
+          (()=>{const ta=document.createElement("textarea");ta.placeholder="이 과목을 담은 이유나 메모 (선택)";ta.value=mySel.reason||"";ta.addEventListener("blur",e=>doField(course.id,"reason",e.target.value));return ta;})(),
+        ]),
+        el("div",{},[
+          el("div",{style:{fontSize:"11px",color:"#666",marginBottom:"5px"}},"강의 평가"),
+          el("div",{class:"rating-wrap"},RATINGS.map(r=>
+            el("button",{class:"rating-btn",style:{background:mySel.rating===r?course.color:"#eee",color:mySel.rating===r?"#fff":"#555"},onClick:()=>doField(course.id,"rating",mySel.rating===r?"":r)},r)
+          )),
+        ]),
+      ]):null,
+    ]):null,
+  ]);
+}
+
+function renderCourses(){
+  return el("div",{},[
+    el("div",{style:{fontSize:"12px",color:"#888",marginBottom:"10px"}},"총 "+COURSES.length+"개 과목 | "+(S.user?"내 수강계획: "+myIds().length+"과목":"로그인하면 수강계획을 저장할 수 있어요")),
+    ...COURSES.map(renderCard),
+  ]);
+}
+
+function renderCalendar(){
+  const y=S.calYear,m=S.calMonth;
+  const days=new Date(y,m+1,0).getDate(),fd=new Date(y,m,1).getDay();
+  const ms=y+"-"+pad(m+1);
+  const ids=S.user?myIds():COURSES.map(c=>c.id);
+  return el("div",{},[
+    el("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"12px"}},[
+      el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px"},onClick:()=>{if(m===0){S.calYear--;S.calMonth=11;}else S.calMonth--;render();}},"◀"),
+      el("b",{style:{fontSize:"15px"}},y+"년 "+(m+1)+"월"),
+      el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px"},onClick:()=>{if(m===11){S.calYear++;S.calMonth=0;}else S.calMonth++;render();}},"▶"),
+    ]),
+    el("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:"2px",marginBottom:"4px"}},[
+      ...["일","월","화","수","목","금","토"].map((d,i)=>el("div",{style:{textAlign:"center",fontSize:"11px",fontWeight:"700",color:i===0?"#e03":i===6?"#47a":"#666",padding:"2px 0"}},d)),
+      ...Array.from({length:fd},()=>el("div",{})),
+      ...Array.from({length:days},(_,i)=>{
+        const d=i+1,ds=ms+"-"+pad(d);
+        const cs=COURSES.filter(c=>ids.includes(c.id)&&c.schedule.some(s=>s.date===ds));
+        const isReg=ds>="2026-05-26"&&ds<="2026-05-29";
+        const di=(fd+d-1)%7;
+        return el("div",{style:{minHeight:"54px",background:isReg?"#fffbe6":"#fff",border:isReg?"1.5px solid #f5c518":"1px solid #eee",borderRadius:"6px",padding:"2px 3px"}},[
+          el("div",{style:{fontSize:"11px",color:di===0?"#e03":di===6?"#47a":"#333",fontWeight:isReg?"700":"400"}},String(d)),
+          isReg?el("div",{style:{fontSize:"8px",color:"#b8860b"}},"수강신청"):null,
+          ...cs.slice(0,3).map(c=>el("div",{style:{fontSize:"8px",background:c.color,color:"#fff",borderRadius:"3px",padding:"1px 2px",marginTop:"1px",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}},c.name)),
+          cs.length>3?el("div",{style:{fontSize:"8px",color:"#999"}},"+"+String(cs.length-3)):null,
+        ]);
+      }),
+    ]),
+    el("div",{style:{fontSize:"11px",color:"#999",marginTop:"6px"}},[
+      S.user?"내 수강계획 과목만 표시":"전체 과목 표시",
+      el("span",{style:{marginLeft:"8px",background:"#fffbe6",border:"1px solid #f5c518",borderRadius:"3px",padding:"1px 5px"}},"수강신청기간"),
+    ]),
+  ]);
+}
+
+function renderAll(){
+  const depts=["전체",...new Set(ALL_COURSES.map(c=>c.dept))];
+  const filtered=S.allDept==="전체"?ALL_COURSES:ALL_COURSES.filter(c=>c.dept===S.allDept);
+  return el("div",{},[
+    el("div",{style:{display:"flex",flexWrap:"wrap",gap:"5px",marginBottom:"12px"}},
+      depts.map(d=>el("button",{
+        style:{fontSize:"11px",padding:"4px 10px",borderRadius:"14px",border:"1px solid #ddd",background:S.allDept===d?"#1a2540":"#fff",color:S.allDept===d?"#fff":"#555",cursor:"pointer"},
+        onClick:()=>{S.allDept=d;render();}
+      },d))
+    ),
+    el("div",{style:{fontSize:"12px",color:"#888",marginBottom:"10px"}},filtered.length+"개 과목"),
+    ...filtered.map(c=>{
+      const dc=DC[c.dept]||"#888",wc=WC[c.weeks]||"#888";
+      return el("div",{class:"card"},[
+        el("div",{style:{display:"flex",alignItems:"center",gap:"5px",flexWrap:"wrap",marginBottom:"4px"}},[
+          el("span",{style:{fontSize:"13px",fontWeight:"700",color:"#222"}},c.name),
+          el("span",{class:"badge",style:{background:dc+"22",color:dc}},c.dept),
+          el("span",{class:"badge",style:{background:wc+"22",color:wc}},c.weeks),
+          el("span",{class:"badge",style:{background:"#f0f0f0",color:"#555"}},c.days+" / "+c.time),
+        ]),
+        el("div",{style:{fontSize:"11px",color:"#888"}},c.code+" | "+c.professor+" 교수"),
+        c.capacity?el("div",{style:{fontSize:"11px",color:"#aaa"}},"정원 "+c.capacity+"명"):null,
+        el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"3px"}},c.remarks),
+      ]);
+    }),
+  ]);
+}
+
+function renderMembers(){
+  const withSel=S.data.users.filter(u=>S.data.selections.some(s=>s.userId===u.id));
+  if(!withSel.length) return el("div",{style:{textAlign:"center",color:"#bbb",padding:"40px"}},"아직 수강계획을 등록한 원우가 없어요.");
+  return el("div",{},withSel.map(u=>{
+    const sels=S.data.selections.filter(s=>s.userId===u.id);
+    return el("div",{class:"card"},[
+      el("div",{style:{fontWeight:"700",fontSize:"14px",color:"#222"}},u.name),
+      el("div",{style:{fontSize:"11px",color:"#888",marginBottom:"8px"}},u.program+" "+u.cohort),
+      el("div",{style:{display:"flex",flexWrap:"wrap",gap:"5px"}},sels.map(s=>{
+        const c=COURSES.find(x=>x.id===s.courseId);
+        return c?el("span",{style:{fontSize:"11px",background:c.color+"22",color:c.color,borderRadius:"6px",padding:"3px 8px",border:"1px solid "+c.color+"44",fontWeight:"600"}},c.name):null;
+      })),
+    ]);
+  }));
+}
+
+function renderLoginModal(){
+  if(!S.showLogin) return el("span",{});
+  return el("div",{class:"modal-overlay",onClick:e=>{if(e.target===e.currentTarget){S.showLogin=false;render();}}},[
+    el("div",{class:"modal"},[
+      el("div",{style:{fontWeight:"800",fontSize:"16px",marginBottom:"16px",color:"#1a2540"}},"내 정보 입력"),
+      ...[["소속 과정","program",PROGRAMS],["기수","cohort",COHORTS]].map(([label,key,opts])=>
+        el("div",{style:{marginBottom:"12px"}},[
+          el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},label),
+          (()=>{
+            const s=document.createElement("select");
+            Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});
+            opts.forEach(o=>{const op=document.createElement("option");op.value=o;op.textContent=o;if(o===S.loginForm[key])op.selected=true;s.append(op);});
+            s.addEventListener("change",e=>S.loginForm[key]=e.target.value);
+            return s;
+          })(),
+        ])
+      ),
+      el("div",{style:{marginBottom:"18px"}},[
+        el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},"이름"),
+        (()=>{
+          const inp=document.createElement("input");inp.type="text";inp.placeholder="실명을 입력해주세요";
+          Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});
+          inp.value=S.loginForm.name;
+          inp.addEventListener("input",e=>S.loginForm.name=e.target.value);
+          inp.addEventListener("keydown",e=>e.key==="Enter"&&doLogin());
+          return inp;
+        })(),
+      ]),
+      el("div",{class:"btn-row"},[
+        el("button",{class:"btn btn-secondary",onClick:()=>{S.showLogin=false;render();}},"취소"),
+        el("button",{class:"btn btn-primary",style:{opacity:S.loginForm.name.trim()?"1":"0.4"},onClick:doLogin},"입력 완료"),
+      ]),
+    ]),
+  ]);
+}
+
+function renderAddModal(){
+  if(!S.addModal) return el("span",{});
+  const c=COURSES.find(x=>x.id===S.addModal.courseId); if(!c) return el("span",{});
+  return el("div",{class:"modal-overlay",onClick:e=>{if(e.target===e.currentTarget){S.addModal=null;render();}}},[
+    el("div",{class:"modal"},[
+      el("div",{style:{display:"flex",alignItems:"center",gap:"8px",marginBottom:"16px"}},[
+        el("div",{style:{width:"10px",height:"10px",borderRadius:"50%",background:c.color,flexShrink:"0"}}),
+        el("div",{style:{fontWeight:"800",fontSize:"15px",color:"#1a2540"}},c.name),
+      ]),
+      el("div",{style:{marginBottom:"14px"}},[
+        el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"5px"}},"수강 이유 / 메모 (선택)"),
+        (()=>{const ta=document.createElement("textarea");ta.placeholder="왜 이 과목을 담으려고 하나요?";ta.value=S.addForm.reason;Object.assign(ta.style,{width:"100%",padding:"10px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"13px",minHeight:"70px",resize:"vertical"});ta.addEventListener("input",e=>S.addForm.reason=e.target.value);return ta;})(),
+      ]),
+      el("div",{style:{marginBottom:"20px"}},[
+        el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"6px"}},"강의 평가 (선택 · 들어봤다면)"),
+        el("div",{class:"rating-wrap"},RATINGS.map(r=>
+          el("button",{class:"rating-btn",style:{background:S.addForm.rating===r?c.color:"#f0f0f0",color:S.addForm.rating===r?"#fff":"#555"},onClick:()=>{S.addForm.rating=S.addForm.rating===r?"":r;render();}},r)
+        )),
+      ]),
+      el("div",{class:"btn-row"},[
+        el("button",{class:"btn btn-secondary",onClick:()=>{S.addModal=null;render();}},"취소"),
+        el("button",{class:"btn",style:{background:c.color,color:"#fff",fontWeight:"700"},onClick:doAdd},"수강계획에 담기"),
+      ]),
+    ]),
+  ]);
+}
+
+function render(){
+  const app=document.getElementById("app");
+  if(!app) return;
+  app.innerHTML="";
+  app.append(
+    renderHeader(),
+    el("div",{class:"content"},[
+      el("div",{class:"banner"},[
+        el("div",{style:{fontSize:"11px",color:"#8fa8d8"}},"수강신청까지"),
+        el("div",{style:{fontSize:"20px",fontWeight:"800"}},["D-5 ",el("span",{style:{fontSize:"13px",fontWeight:"400",color:"#a0c4ff"}},"5.26(화) 12:30 시작")]),
+        el("div",{style:{fontSize:"10px",color:"#8fa8d8",marginTop:"2px"}},"추첨: 5.26 → 결과발표: 5.28 12:00 → 선착순: 5.28~5.29"),
+      ]),
+      S.view==="courses"?renderCourses():S.view==="calendar"?renderCalendar():S.view==="members"?renderMembers():renderAll(),
+    ]),
+    renderLoginModal(),
+    renderAddModal(),
+    S.toast?el("div",{class:"toast"},S.toast):el("span",{}),
+  );
+}
+
+// ── 데이터 바인딩 및 안전한 초기화 ───────────────────────
+try {
+  onSnapshot(DOC, snap=>{
+    if(snap.exists()){
+      const d=snap.data();
+      S.data={ users:Array.isArray(d.users)?d.users:[], selections:Array.isArray(d.selections)?d.selections:[] };
+    } else {
+      S.data={users:[],selections:[]};
+    }
+    render();
+  }, err => {
+    console.error("Firestore 에러 발생:", err);
+    render();
+    toast("데이터를 불러오지 못했습니다. (보안 규칙 확인 필요)");
+  });
+} catch(e) {
+  console.error(e);
+  render();
+}
+
+// 최초 1회 즉시 실행하여 '불러오는 중'을 제거
+render();
+</script>
+</body>
+</html>
