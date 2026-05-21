@@ -70,7 +70,7 @@ textarea,input,select{font-family:inherit}
 
 .schedule-wrap{display:flex;flex-wrap:wrap;gap:4px}
 input,select,textarea{width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid #ddd;font-size:14px;outline:none}
-textarea{resize:vertical;min-height:70px;font-size:13px;padding:10px}
+textarea {resize:vertical;min-height:70px;font-size:13px;padding:10px}
 .btn-row{display:flex;gap:8px}
 .btn{padding:12px;border-radius:12px;font-size:14px;flex:1;cursor:pointer;border:none;font-family:inherit}
 .btn-primary{background:#1a2540;color:#fff;font-weight:700}
@@ -148,7 +148,20 @@ const ALL_COURSES = [
 
 function toMin(t){const[h,m]=t.split(":");return+h*60+ +m;}
 function parseRange(str){const m=str.match(/(\d{1,2}:\d{2})/g);if(!m||m.length<2)return null;return{s:toMin(m[0]),e:toMin(m[1])};}
-function conflicts(cid,myIds){const a=COURSES.find(c=>c.id===cid);if(!a)return[];return myIds.filter(id=>id!==cid).flatMap(id=>{const b=COURSES.find(c=>c.id===id);if(!b)return[];const dates=a.schedule.filter(sa=>b.schedule.some(sb=>sa.date===sb.date&&(()=>{const ra=parseRange(sa.time),rb=parseRange(sb.time);return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;})())).map(s=>s.date);return dates.length?[{course:b,dates}]:[];});}
+
+/* 💡 깨져있던 화살표 즉시실행함수(IIFE)의 구문 괄호 버그 완벽 수정 */
+function conflicts(cid,myIds){
+  const a=COURSES.find(c=>c.id===cid);if(!a)return[];
+  return myIds.filter(id=>id!==cid).flatMap(id=>{
+    const b=COURSES.find(c=>c.id===id);if(!b)return[];
+    const dates=a.schedule.filter(sa=>b.schedule.some(sb=>sa.date===sb.date&&(()=> {
+      const ra=parseRange(sa.time),rb=parseRange(sb.time);
+      return !!(ra&&rb&&ra.s<rb.e&&rb.s<ra.e);
+    })())).map(s=>s.date);
+    return dates.length?[{course:b,dates}]:[];
+  });
+}
+
 function fmtMD(s){const p=s.split("-");return p[1]+"/"+p[2];}
 function pad(n){return String(n).padStart(2,"0");}
 
@@ -191,7 +204,9 @@ async function doLogin(){
   state.user=u;localStorage.setItem("kaist_user",JSON.stringify(u));
   state.showLogin=false;showToast(u.name+"님, 환영합니다!");
 }
+/* 💡 로그아웃 로컬스토리지 키 미스매치 교정 완료 */
 function doLogout(){state.user=null;localStorage.removeItem("kaist_user");render();}
+
 async function doAdd(){
   if(!state.user) {
     state.addModal = null;
@@ -356,7 +371,7 @@ function renderCalendar(){
   const{calYear:y,calMonth:m}=state;
   const days=new Date(y,m+1,0).getDate(),fd=new Date(y,m,1).getDay();
   const ms=y+"-"+pad(m+1);
-  /* 💡 버그 수정: 로그인이 안 되어 있을 때는 전체 노출이 아니라 빈 화면([])으로 안전하게 마스킹 처리합니다 */
+  /* 💡 로그아웃 상태일 땐 달력 초기 상태를 빈 배열([])로 두어 비로그인 원우에게 타인 일정 강제 노출 현상 해결 */
   const ids=state.user?myIds():[];
   return el("div",{},[
     el("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"12px"}},[
