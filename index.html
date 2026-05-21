@@ -12,7 +12,7 @@ button{cursor:pointer;font-family:inherit;border:none}
 textarea,input,select{font-family:inherit}
 #app{display:block;min-height:100vh;width:100%;background:#f6f7fb}
 .header{background:#1a2540;padding:16px 16px 0;position:fixed;top:0;left:0;right:0;z-index:100;width:100%}
-.content{padding-top:110px!important}
+.content{padding-top:120px}
 .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .nav{display:flex;gap:2px;width:100%}
 .nav button{flex:1;padding:10px 0;background:transparent;color:#8fa8d8;font-size:11px;border-radius:8px 8px 0 0;white-space:nowrap}
@@ -141,7 +141,7 @@ let G = {
   data: {users:[], selections:[]},
   user: getSavedUser(),
   view:"courses", expanded:null, calYear:2026, calMonth:5, allDept:"전체",
-  showLogin:false, loginForm:{program:"프로페셔널MBA",cohort:"14기",name:""},
+  showLogin:false, showGuest:false, loginForm:{program:"프로페셔널MBA",cohort:"14기",name:""},
   addModal:null, addForm:{reason:"",rating:""},
   toast:"", toastTimer:null
 };
@@ -280,7 +280,7 @@ function renderCard(course){
       el("button",{
         style:{background:sel?course.color:"#f0f0f0",color:sel?"#fff":"#555",borderRadius:"20px",fontSize:"12px",padding:"5px 12px",fontWeight:"600",flexShrink:"0",border:"none",cursor:"pointer",fontFamily:"inherit"},
         onClick:()=>{
-          if(!G.user){G.showLogin=true;render();return;}
+          if(!G.user){G.showGuest=true;render();return;}
           if(sel){doRemove(course.id);}
           else{G.addForm={reason:"",rating:""};G.addModal={courseId:course.id};render();}
         }
@@ -426,6 +426,23 @@ function renderMembers(){
       })),
     ]);
   }));
+}
+
+function renderGuestModal(){
+  if(!G.showGuest) return el("span",{});
+  return el("div",{class:"modal-overlay",onClick:e=>{if(e.target===e.currentTarget){G.showGuest=false;render();}}},[
+    el("div",{class:"modal"},[
+      el("div",{style:{fontSize:"32px",textAlign:"center",marginBottom:"12px"}},"👋"),
+      el("div",{style:{fontWeight:"800",fontSize:"17px",color:"#1a2540",textAlign:"center",marginBottom:"8px"}},"로그인하고 함께 계획하세요"),
+      el("div",{style:{fontSize:"13px",color:"#666",textAlign:"center",lineHeight:"1.6",marginBottom:"24px"}},[
+        "원우들의 수강 계획을 확인하고",el("br",{}),"내 수강계획을 공유할 수 있어요.",
+      ]),
+      el("div",{class:"btn-row"},[
+        el("button",{class:"btn btn-secondary",onClick:()=>{G.showGuest=false;render();}},"취소"),
+        el("button",{class:"btn btn-primary",onClick:()=>{G.showGuest=false;G.showLogin=true;render();}},"로그인하기"),
+      ]),
+    ]),
+  ]);
 }
 
 function renderLoginModal(){
