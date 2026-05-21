@@ -10,48 +10,48 @@
 html,body{background:#f6f7fb;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;min-height:100vh;width:100%}
 button{cursor:pointer;font-family:inherit;border:none}
 textarea,input,select{font-family:inherit;box-sizing:border-box}
-.header{background:#1a2540;padding:14px 14px 0;position:fixed;top:0;left:0;right:0;z-index:100}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hdr{background:#1a2540;padding:14px 14px 0;position:fixed;top:0;left:0;right:0;z-index:100}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .nav{display:flex;gap:2px}
-.nav button{flex:1;padding:8px 0;background:transparent;color:#8fa8d8;font-size:11px;border-radius:8px 8px 0 0;white-space:nowrap}
-.nav button.active{background:#4F86C6;color:#fff;font-weight:700}
-.content{padding:120px 14px 14px}
+.nav button{flex:1;padding:8px 0;background:transparent;color:#8fa8d8;font-size:11px;border-radius:8px 8px 0 0;white-space:nowrap;border:none;cursor:pointer;font-family:inherit}
+.nav button.on{background:#4F86C6;color:#fff;font-weight:700}
+.body{padding:120px 14px 14px}
 .banner{background:linear-gradient(135deg,#1a2540,#2d4a8a);border-radius:12px;padding:12px 14px;margin-bottom:14px;color:#fff}
 .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border:1.5px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.badge{font-size:9px;border-radius:4px;padding:1px 5px;font-weight:600;display:inline-block;margin-right:2px}
-.progress-bar{background:#f0f0f0;border-radius:6px;height:7px;overflow:hidden}
-.progress-fill{height:100%;border-radius:6px;transition:width .4s}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end}
-.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px;width:100%}
+.bdg{font-size:9px;border-radius:4px;padding:1px 5px;font-weight:600;display:inline-block;margin-right:2px}
+.pbar{background:#f0f0f0;border-radius:6px;height:7px;overflow:hidden}
+.pfill{height:100%;border-radius:6px;transition:width .4s}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end}
+.mod{background:#fff;border-radius:20px 20px 0 0;padding:24px;width:100%}
 .chip{font-size:10px;border-radius:5px;padding:3px 7px;border-width:1px;border-style:solid}
-.member-card{background:#f8f8f8;border-radius:8px;padding:8px 10px;margin-bottom:6px}
+.mc{background:#f8f8f8;border-radius:8px;padding:8px 10px;margin-bottom:6px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a2540;color:#fff;border-radius:20px;padding:10px 22px;font-size:13px;font-weight:600;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.25);white-space:nowrap}
-.conflict-box{margin-top:8px;background:#fff0f0;border-radius:8px;padding:8px 12px;border:1px solid #fcc}
-.schedule-wrap{display:flex;flex-wrap:wrap;gap:4px}
+.cfbox{margin-top:8px;background:#fff0f0;border-radius:8px;padding:8px 12px;border:1px solid #fcc}
+.swrap{display:flex;flex-wrap:wrap;gap:4px}
 input,select,textarea{width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid #ddd;font-size:14px;outline:none}
 textarea{resize:vertical;min-height:70px;font-size:13px;padding:10px}
-.btn-row{display:flex;gap:8px}
+.brow{display:flex;gap:8px}
 .btn{padding:12px;border-radius:12px;font-size:14px;flex:1;cursor:pointer;border:none;font-family:inherit}
-.btn-primary{background:#1a2540;color:#fff;font-weight:700}
-.btn-secondary{background:#f0f0f0;color:#555}
-.rating-wrap{display:flex;flex-wrap:wrap;gap:6px}
-.rating-btn{font-size:11px;padding:4px 10px;border-radius:16px;cursor:pointer;border:none;font-family:inherit}
+.bp{background:#1a2540;color:#fff;font-weight:700}
+.bs{background:#f0f0f0;color:#555}
+.rwrap{display:flex;flex-wrap:wrap;gap:6px}
+.rbtn{font-size:11px;padding:4px 10px;border-radius:16px;cursor:pointer;border:none;font-family:inherit}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app"><div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#999">불러오는 중...</div></div>
 <script>
-const PROGRAMS=["프로페셔널MBA","카이스트MBA","이그제큐티브MBA","금융MBA","디지털금융MBA","금융공학프로그램","정보경영프로그램","임팩트MBA"];
-const COHORTS=["14기","13기","12기"];
-const RATINGS=["⭐ 매우 추천","👍 추천","😐 보통","👎 비추천"];
-const WC={"1~4주":"#4F86C6","5~8주":"#E07B54","1~8주":"#9B6BB5"};
-const DC={"카이스트MBA":"#2196F3","이그제큐티브MBA":"#9C27B0","임팩트MBA":"#4CAF50","금융MBA(디지털금융MBA)":"#FF9800","디지털금융MBA":"#F44336","금융공학프로그램":"#795548","정보경영프로그램":"#00BCD4"};
+var BIN_ID = "6a0ed0416877513b27aaa376";
+var MKEY = "$2a$10$lnj2XARlHWVJZ4Vkc3YtNuH.64V8zJei.7NfckLaIR8Py6ZCdkZCa";
+var BIN_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
 
-// JSONbin 설정 (무료 공유 저장소)
-const BIN_ID = "683d5a3b8960c979a5a0e0e4";
-const API_KEY = "$2a$10$placeholder_will_create";
+var PROGRAMS = ["프로페셔널MBA","카이스트MBA","이그제큐티브MBA","금융MBA","디지털금융MBA","금융공학프로그램","정보경영프로그램","임팩트MBA"];
+var COHORTS = ["14기","13기","12기"];
+var RATINGS = ["⭐ 매우 추천","👍 추천","😐 보통","👎 비추천"];
+var WC = {"1~4주":"#4F86C6","5~8주":"#E07B54","1~8주":"#9B6BB5"};
+var DC = {"카이스트MBA":"#2196F3","이그제큐티브MBA":"#9C27B0","임팩트MBA":"#4CAF50","금융MBA(디지털금융MBA)":"#FF9800","디지털금융MBA":"#F44336","금융공학프로그램":"#795548","정보경영프로그램":"#00BCD4"};
 
-const COURSES=[
+var COURSES = [
   {id:"BIZ60014",code:"BIZ.60014",name:"신사업개발",professor:"장대철",capacity:60,weeks:"1~4주",color:"#4F86C6",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"",schedule:[{date:"2026-06-30",day:"화",time:"19:00~22:00"},{date:"2026-07-02",day:"목",time:"19:00~22:00"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-21",day:"화",time:"19:00~22:00"},{date:"2026-07-23",day:"목",time:"19:00~22:00"}]},
   {id:"BIZ60022",code:"BIZ.60022",name:"협상론",professor:"이지환",capacity:60,weeks:"5~8주",color:"#E07B54",cross:false,eligibility:"PMBA Only → 변경기간 All",remarks:"",schedule:[{date:"2026-07-28",day:"화",time:"19:00~22:00"},{date:"2026-07-30",day:"목",time:"19:00~22:00"},{date:"2026-08-01",day:"토",time:"09:00~12:00"},{date:"2026-08-04",day:"화",time:"19:00~22:00"},{date:"2026-08-06",day:"목",time:"19:00~22:00"},{date:"2026-08-08",day:"토",time:"09:00~12:00"},{date:"2026-08-11",day:"화",time:"19:00~22:00"},{date:"2026-08-13",day:"목",time:"19:00~22:00"}]},
   {id:"BIZ60059",code:"BIZ.60059",name:"기술혁신과 비즈니스 전략",professor:"김상원",capacity:75,weeks:"1~4주",color:"#6BAE75",cross:false,eligibility:"PMBA Only",remarks:"대전 본원",schedule:[{date:"2026-06-29",day:"월",time:"09:00~18:00"},{date:"2026-06-30",day:"화",time:"09:00~18:00"},{date:"2026-07-01",day:"수",time:"09:00~18:00"}]},
@@ -61,10 +61,10 @@ const COURSES=[
   {id:"BAF50002PA",code:"BAF.50002 PA",name:"재무회계 (PA반)",professor:"서호준",capacity:52,weeks:"1~4주",color:"#5BA8A0",cross:false,eligibility:"PMBA Only",remarks:"",schedule:[{date:"2026-06-24",day:"화",time:"19:00~22:00"},{date:"2026-06-26",day:"목",time:"19:00~22:00"},{date:"2026-06-28",day:"토",time:"09:00~16:30"},{date:"2026-07-01",day:"화",time:"19:00~22:00"},{date:"2026-07-03",day:"목",time:"19:00~22:00"},{date:"2026-07-05",day:"토",time:"09:00~16:30"},{date:"2026-07-07",day:"화",time:"19:00~22:00"},{date:"2026-07-09",day:"목",time:"19:00~22:00"},{date:"2026-07-11",day:"토",time:"09:00~16:30"},{date:"2026-07-14",day:"화",time:"19:00~22:00"},{date:"2026-07-16",day:"목",time:"19:00~22:00"},{date:"2026-07-18",day:"토",time:"09:00~16:30"}]},
   {id:"BAF50002PB",code:"BAF.50002 PB",name:"재무회계 (PB반)",professor:"홍필립기재",capacity:52,weeks:"5~8주",color:"#7B9ED9",cross:false,eligibility:"PMBA Only",remarks:"",schedule:[{date:"2026-07-28",day:"화",time:"19:00~22:00"},{date:"2026-07-30",day:"목",time:"19:00~22:00"},{date:"2026-08-01",day:"토",time:"09:00~16:30"},{date:"2026-08-04",day:"화",time:"19:00~22:00"},{date:"2026-08-06",day:"목",time:"19:00~22:00"},{date:"2026-08-08",day:"토",time:"09:00~16:30"},{date:"2026-08-11",day:"화",time:"19:00~22:00"},{date:"2026-08-13",day:"목",time:"19:00~22:00"},{date:"2026-08-15",day:"토",time:"09:00~16:30"},{date:"2026-08-18",day:"화",time:"19:00~22:00"},{date:"2026-08-20",day:"목",time:"19:00~22:00"},{date:"2026-08-22",day:"토",time:"09:00~16:30"}]},
   {id:"BAF60012",code:"BAF.60012",name:"사모투자",professor:"Daniel Rettl",capacity:50,weeks:"1~4주",color:"#C47F3A",cross:true,eligibility:"6.25(목) 09:30부터 All 개방",remarks:"DFMBA/FMBA/MFE 과목",schedule:[{date:"2026-06-29",day:"월",time:"19:00~22:00"},{date:"2026-07-01",day:"수",time:"19:00~22:00"},{date:"2026-07-04",day:"토",time:"13:00~16:00"},{date:"2026-07-06",day:"월",time:"19:00~22:00"},{date:"2026-07-08",day:"수",time:"19:00~22:00"},{date:"2026-07-10",day:"금",time:"19:00~22:00"},{date:"2026-07-13",day:"월",time:"19:00~22:00"},{date:"2026-07-15",day:"수",time:"19:00~22:00"}]},
-  {id:"BIZ60027",code:"BIZ.60027",name:"임팩트벤처 시장조사 및 BM개발",professor:"장대철",capacity:null,weeks:"5~8주",color:"#4CAF50",cross:true,eligibility:"IMBA Only → 변경기간 All",remarks:"7.28~8.20 진행",schedule:[{date:"2026-07-28",day:"화",time:"13:00~16:00"},{date:"2026-07-30",day:"목",time:"13:00~16:00"},{date:"2026-08-04",day:"화",time:"13:00~16:00"},{date:"2026-08-06",day:"목",time:"13:00~16:00"},{date:"2026-08-11",day:"화",time:"13:00~16:00"},{date:"2026-08-13",day:"목",time:"13:00~16:00"},{date:"2026-08-18",day:"화",time:"13:00~16:00"},{date:"2026-08-20",day:"목",time:"13:00~16:00"}]},
+  {id:"BIZ60027",code:"BIZ.60027",name:"임팩트벤처 시장조사 및 BM개발",professor:"장대철",capacity:null,weeks:"5~8주",color:"#4CAF50",cross:true,eligibility:"IMBA Only → 변경기간 All",remarks:"7.28~8.20 진행",schedule:[{date:"2026-07-28",day:"화",time:"13:00~16:00"},{date:"2026-07-30",day:"목",time:"13:00~16:00"},{date:"2026-08-04",day:"화",time:"13:00~16:00"},{date:"2026-08-06",day:"목",time:"13:00~16:00"},{date:"2026-08-11",day:"화",time:"13:00~16:00"},{date:"2026-08-13",day:"목",time:"13:00~16:00"},{date:"2026-08-18",day:"화",time:"13:00~16:00"},{date:"2026-08-20",day:"목",time:"13:00~16:00"}]}
 ];
 
-const ALL_COURSES=[
+var ALL_COURSES = [
   {dept:"카이스트MBA",code:"BIZ.50085",name:"소셜 미디어 및 네트워크 분석",professor:"박희목",days:"월~목",time:"09:00~13:00",weeks:"1~4주",capacity:40,remarks:"K/TMBA Only → 변경기간 All / 7.6~7.23"},
   {dept:"카이스트MBA",code:"BIZ.80004",name:"해외현장실습",professor:"학과교수",days:"월~금",time:"09:00~18:00",weeks:"1~4주",capacity:null,remarks:"K/TMBA Only / IE Business School (스페인) 6.22~7.3"},
   {dept:"이그제큐티브MBA",code:"BIZ.69900 XA",name:"경영특수논제 <AI와 비즈니스 혁신>",professor:"윤여선",days:"금·토",time:"15:00~21:00 / 09:00~16:00",weeks:"5~8주",capacity:null,remarks:"EMBA Only / 8.14~8.22 예정"},
@@ -81,433 +81,405 @@ const ALL_COURSES=[
   {dept:"디지털금융MBA",code:"BAF.69906 D",name:"디지털금융특수논제 <디지털자산>",professor:"김서영",days:"월·수",time:"19:00~22:00",weeks:"5~8주",capacity:50,remarks:"DFMBA Only → 변경기간 All"},
   {dept:"디지털금융MBA",code:"BAF.94368",name:"글로벌금융 현장연구",professor:"김경국",days:"월~목",time:"09:00~18:00",weeks:"1~4주",capacity:55,remarks:"DFMBA Only / UCL (영국) 6.22~6.25"},
   {dept:"금융공학프로그램",code:"BAF.50002 Q",name:"재무회계",professor:"정부천",days:"월~목",time:"09:00~12:00",weeks:"5~8주",capacity:null,remarks:"MFE Only / 7.20~8.13"},
-  {dept:"정보경영프로그램",code:"BIZ.94304",name:"IT경영 해외현장연구",professor:"강금석",days:"월~금",time:"09:00~18:00",weeks:"1~8주",capacity:null,remarks:"IMMS Only / Santa Clara Univ (미국) 7.11~7.19"},
+  {dept:"정보경영프로그램",code:"BIZ.94304",name:"IT경영 해외현장연구",professor:"강금석",days:"월~금",time:"09:00~18:00",weeks:"1~8주",capacity:null,remarks:"IMMS Only / Santa Clara Univ (미국) 7.11~7.19"}
 ];
 
 // ── 유틸 ──────────────────────────────────────────────
-function toMin(t){const[h,m]=t.split(":");return+h*60+ +m;}
-function parseRange(str){const m=str.match(/(\d{1,2}:\d{2})/g);if(!m||m.length<2)return null;return{s:toMin(m[0]),e:toMin(m[1])};}
+function toMin(t){var p=t.split(":");return +p[0]*60+ +p[1];}
+function parseRange(str){var m=str.match(/(\d{1,2}:\d{2})/g);if(!m||m.length<2)return null;return{s:toMin(m[0]),e:toMin(m[1])};}
 function getConflicts(cid,ids){
-  const a=COURSES.find(c=>c.id===cid);if(!a)return[];
-  return ids.filter(id=>id!==cid).flatMap(id=>{
-    const b=COURSES.find(c=>c.id===id);if(!b)return[];
-    const dates=a.schedule.filter(sa=>b.schedule.some(sb=>{
-      if(sa.date!==sb.date)return false;
-      const ra=parseRange(sa.time),rb=parseRange(sb.time);
-      return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;
-    })).map(s=>s.date);
-    return dates.length?[{course:b,dates}]:[];
+  var a=COURSES.find(function(c){return c.id===cid;});if(!a)return[];
+  return ids.filter(function(id){return id!==cid;}).flatMap(function(id){
+    var b=COURSES.find(function(c){return c.id===id;});if(!b)return[];
+    var dates=a.schedule.filter(function(sa){
+      return b.schedule.some(function(sb){
+        if(sa.date!==sb.date)return false;
+        var ra=parseRange(sa.time),rb=parseRange(sb.time);
+        return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;
+      });
+    }).map(function(s){return s.date;});
+    return dates.length?[{course:b,dates:dates}]:[];
   });
 }
-function fmtMD(s){const p=s.split("-");return p[1]+"/"+p[2];}
+function fmtMD(s){var p=s.split("-");return p[1]+"/"+p[2];}
 function pad(n){return String(n).padStart(2,"0");}
 function schedSummary(sch){
-  const days=[...new Set(sch.map(s=>s.day))].join("·");
-  const ev=sch.some(s=>parseInt(s.time)>=18),am=sch.some(s=>parseInt(s.time)<12&&parseInt(s.time)>=6),pm=sch.some(s=>parseInt(s.time)>=12&&parseInt(s.time)<18);
+  var days=[...new Set(sch.map(function(s){return s.day;}))].join("·");
+  var ev=sch.some(function(s){return parseInt(s.time)>=18;});
+  var am=sch.some(function(s){return parseInt(s.time)<12&&parseInt(s.time)>=6;});
+  var pm=sch.some(function(s){return parseInt(s.time)>=12&&parseInt(s.time)<18;});
   return days+" / "+[ev?"야간":"",am?"오전":"",pm?"오후":""].filter(Boolean).join("+");
 }
 function getSavedUser(){try{return JSON.parse(localStorage.getItem("ku")||"null");}catch(e){return null;}}
-function badge(text,bg,color){
-  const s=document.createElement("span");
-  s.className="badge";s.textContent=text;
-  s.style.background=bg;s.style.color=color;
-  return s;
-}
+function bdg(text,bg,color){var s=document.createElement("span");s.className="bdg";s.textContent=text;s.style.background=bg;s.style.color=color;return s;}
 
 // ── State ──────────────────────────────────────────────
-let G={
+var G={
   data:{users:[],selections:[]},
   user:getSavedUser(),
   view:"courses",expanded:null,calYear:2026,calMonth:5,allDept:"전체",
   showLogin:false,showGuest:false,
   loginForm:{program:"프로페셔널MBA",cohort:"14기",name:""},
   addModal:null,addForm:{reason:"",rating:""},
-  toast:"",toastTimer:null,saving:false
+  toast:"",toastTimer:null
 };
 
-// ── 저장소 (localStorage 기반 + 주기적 동기화) ──────────
-const STORE_KEY="kaist_mba_data_v1";
-
+// ── JSONbin ──────────────────────────────────────────────
 function loadLocal(){
-  try{
-    const d=JSON.parse(localStorage.getItem(STORE_KEY)||"null");
-    if(d&&Array.isArray(d.users)&&Array.isArray(d.selections)) G.data=d;
-  }catch(e){}
+  try{var d=JSON.parse(localStorage.getItem("kaist_v1")||"null");if(d&&Array.isArray(d.users))G.data=d;}catch(e){}
+}
+function saveLocal(){try{localStorage.setItem("kaist_v1",JSON.stringify(G.data));}catch(e){}}
+
+function syncFromServer(){
+  fetch(BIN_URL+"/latest",{headers:{"X-Master-Key":MKEY}})
+  .then(function(r){return r.json();})
+  .then(function(j){
+    if(j.record&&Array.isArray(j.record.users)){G.data=j.record;saveLocal();}
+    render();
+  })
+  .catch(function(){render();});
 }
 
-function saveLocal(){
-  try{localStorage.setItem(STORE_KEY,JSON.stringify(G.data));}catch(e){}
+function syncToServer(){
+  fetch(BIN_URL,{
+    method:"PUT",
+    headers:{"Content-Type":"application/json","X-Master-Key":MKEY},
+    body:JSON.stringify(G.data)
+  }).catch(function(){});
 }
 
-// ── 서버 동기화 (JSONbin) ──────────────────────────────
-// JSONbin API - 무료 공개 bin
-const BIN_ID="6a0ed0416877513b27aaa376";
-const MASTER_KEY="$2a$10$lnj2XARlHWVJZ4Vkc3YtNuH.64V8zJei.7NfckLaIR8Py6ZCdkZCa";
-
-async function syncFromServer(){
-  try{
-    const r=await fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{
-      headers:{"X-Master-Key":MASTER_KEY}
-    });
-    if(r.ok){
-      const j=await r.json();
-      const d=j.record;
-      if(d&&Array.isArray(d.users)){G.data=d;saveLocal();}
-    }
-  }catch(e){console.log("서버 동기화 실패, 로컬 데이터 사용");}
-  render();
-}
-
-async function syncToServer(){
-  try{
-    await fetch("https://api.jsonbin.io/v3/b/"+BIN_ID,{
-      method:"PUT",
-      headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY},
-      body:JSON.stringify(G.data)
-    });
-  }catch(e){console.log("서버 저장 실패");}
-}
-
-// ── 초기화 ──────────────────────────────────────────────
-loadLocal();
-render(); // 로컬 데이터로 즉시 렌더링
-syncFromServer(); // 서버에서 최신 데이터 로드
-
-// ── 저장 ──────────────────────────────────────────────
-function save(fn){
-  fn(G.data);
-  saveLocal();
-  render();
-  syncToServer();
-}
+function save(fn){fn(G.data);saveLocal();render();syncToServer();}
 
 // ── 토스트 ──────────────────────────────────────────────
 function showToast(msg){
   G.toast=msg;render();
   if(G.toastTimer)clearTimeout(G.toastTimer);
-  G.toastTimer=setTimeout(()=>{G.toast="";render();},2400);
+  G.toastTimer=setTimeout(function(){G.toast="";render();},2400);
 }
 
 // ── 액션 ──────────────────────────────────────────────
 function doLogin(){
-  const{program,cohort,name}=G.loginForm;if(!name.trim())return;
-  const uid=[program,cohort,name.trim()].join("|");
-  const u={id:uid,program,cohort,name:name.trim()};
-  save(d=>{if(!d.users.find(x=>x.id===uid))d.users.push(u);});
+  var p=G.loginForm;if(!p.name.trim())return;
+  var uid=[p.program,p.cohort,p.name.trim()].join("|");
+  var u={id:uid,program:p.program,cohort:p.cohort,name:p.name.trim()};
+  save(function(d){if(!d.users.find(function(x){return x.id===uid;}))d.users.push(u);});
   G.user=u;try{localStorage.setItem("ku",JSON.stringify(u));}catch(e){}
   G.showLogin=false;showToast(u.name+"님, 환영합니다!");
 }
 function doLogout(){G.user=null;try{localStorage.removeItem("ku");}catch(e){}render();}
 function doAdd(){
   if(!G.user||!G.addModal)return;
-  const cid=G.addModal.courseId,{reason,rating}=G.addForm;
-  save(d=>{if(!d.selections.find(s=>s.userId===G.user.id&&s.courseId===cid))d.selections.push({userId:G.user.id,courseId:cid,reason,rating,addedAt:new Date().toISOString()});});
+  var cid=G.addModal.courseId,reason=G.addForm.reason,rating=G.addForm.rating;
+  save(function(d){
+    if(!d.selections.find(function(s){return s.userId===G.user.id&&s.courseId===cid;}))
+      d.selections.push({userId:G.user.id,courseId:cid,reason:reason,rating:rating,addedAt:new Date().toISOString()});
+  });
   G.addModal=null;showToast("수강계획에 추가했습니다!");
 }
 function doRemove(cid){
-  save(d=>{const i=d.selections.findIndex(s=>s.userId===G.user.id&&s.courseId===cid);if(i>=0)d.selections.splice(i,1);});
+  save(function(d){var i=d.selections.findIndex(function(s){return s.userId===G.user.id&&s.courseId===cid;});if(i>=0)d.selections.splice(i,1);});
   showToast("수강계획에서 제거했습니다.");
 }
 function doField(cid,field,val){
-  save(d=>{const s=d.selections.find(s=>s.userId===G.user.id&&s.courseId===cid);if(s)s[field]=val;});
+  save(function(d){var s=d.selections.find(function(s){return s.userId===G.user.id&&s.courseId===cid;});if(s)s[field]=val;});
 }
 
 // ── 셀렉터 ──────────────────────────────────────────────
-const myIds=()=>G.user?G.data.selections.filter(s=>s.userId===G.user.id).map(s=>s.courseId):[];
-const isSel=cid=>myIds().includes(cid);
-const getSels=cid=>G.data.selections.filter(s=>s.courseId===cid);
-const getMySel=cid=>G.user?G.data.selections.find(s=>s.userId===G.user.id&&s.courseId===cid):null;
-const getUser=id=>G.data.users.find(u=>u.id===id);
+function myIds(){return G.user?G.data.selections.filter(function(s){return s.userId===G.user.id;}).map(function(s){return s.courseId;}):[]; }
+function isSel(cid){return myIds().indexOf(cid)>=0;}
+function getSels(cid){return G.data.selections.filter(function(s){return s.courseId===cid;});}
+function getMySel(cid){return G.user?G.data.selections.find(function(s){return s.userId===G.user.id&&s.courseId===cid;}):null;}
+function getUser(id){return G.data.users.find(function(u){return u.id===id;});}
 
 // ── DOM 헬퍼 ──────────────────────────────────────────
 function el(tag,attrs,children){
   attrs=attrs||{};children=Array.isArray(children)?children:(children?[children]:[]);
-  const e=document.createElement(tag);
-  for(const[k,v]of Object.entries(attrs)){
-    if(v==null)continue;
+  var e=document.createElement(tag);
+  Object.keys(attrs).forEach(function(k){
+    var v=attrs[k];if(v==null)return;
     if(k==="style"&&typeof v==="object")Object.assign(e.style,v);
-    else if(k.startsWith("on"))e.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k.indexOf("on")===0)e.addEventListener(k.slice(2).toLowerCase(),v);
     else if(k==="class")e.className=v;
     else e.setAttribute(k,v);
-  }
-  for(const c of children){
-    if(c==null||c===false)continue;
+  });
+  children.forEach(function(c){
+    if(c==null||c===false)return;
     e.append(typeof c==="string"?document.createTextNode(c):c);
-  }
+  });
   return e;
 }
 
-// ── 렌더 함수들 ──────────────────────────────────────────
-function renderHeader(){
-  return el("div",{class:"header"},[
-    el("div",{class:"header-top"},[
-      el("div",{},[
-        el("div",{style:{color:"#fff",fontWeight:"800",fontSize:"15px"}},"KAIST MBA"),
-        el("div",{style:{color:"#8fa8d8",fontSize:"11px"}},"2026 여름학기 수강계획 공유"),
-      ]),
-      G.user
-        ?el("div",{style:{display:"flex",alignItems:"center",gap:"8px"}},[
-            el("span",{style:{color:"#a0c4ff",fontSize:"12px"}},G.user.name),
-            el("button",{style:{background:"rgba(255,255,255,.13)",color:"#ccc",borderRadius:"14px",fontSize:"11px",padding:"4px 10px"},onClick:doLogout},"로그아웃"),
-          ])
-        :el("button",{style:{background:"#4F86C6",color:"#fff",borderRadius:"16px",fontSize:"12px",padding:"6px 14px"},onClick:()=>{G.showLogin=true;render();}},"로그인"),
-    ]),
-    el("div",{class:"nav"},[
-      ["courses","📚 과목"],["calendar","📅 달력"],["members","👥 원우"],["all","🏫 전체과정"]
-    ].map(([v,l])=>el("button",{class:G.view===v?"active":"",onClick:()=>{G.view=v;render();}},l))),
-  ]);
-}
-
+// ── 렌더 ──────────────────────────────────────────────
 function renderCard(course){
-  const sels=getSels(course.id),sel=isSel(course.id);
-  const pct=course.capacity?Math.round(sels.length/course.capacity*100):null;
-  const expanded=G.expanded===course.id;
-  const mySel=getMySel(course.id);
-  const cf=sel?getConflicts(course.id,myIds()):[];
-  return el("div",{class:"card",style:{
-    background:course.cross?"#fcfcfc":"#fff",
-    border:sel?"2px solid "+course.color:course.cross?"1.5px dashed #ccc":"1.5px solid #eee",
-    boxShadow:sel?"0 2px 12px "+course.color+"33":"0 1px 4px rgba(0,0,0,.06)"
-  }},[
+  var sels=getSels(course.id),sel=isSel(course.id);
+  var pct=course.capacity?Math.round(sels.length/course.capacity*100):null;
+  var expanded=G.expanded===course.id;
+  var mySel=getMySel(course.id);
+  var cf=sel?getConflicts(course.id,myIds()):[];
+  return el("div",{class:"card",style:{background:course.cross?"#fcfcfc":"#fff",border:sel?"2px solid "+course.color:course.cross?"1.5px dashed #ccc":"1.5px solid #eee",boxShadow:sel?"0 2px 12px "+course.color+"33":"0 1px 4px rgba(0,0,0,.06)"}},[
     el("div",{style:{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:"8px"}},[
-      el("div",{style:{flex:"1",cursor:"pointer"},onClick:()=>{G.expanded=expanded?null:course.id;render();}},[
+      el("div",{style:{flex:"1",cursor:"pointer"},onClick:function(){G.expanded=expanded?null:course.id;render();}},[
         el("div",{style:{display:"flex",alignItems:"center",gap:"3px",flexWrap:"wrap",marginBottom:"3px"}},[
           el("span",{style:{fontSize:"13px",fontWeight:"700",color:"#222",marginRight:"3px"}},course.name),
-          course.cross?badge("타과정","#eee","#555"):null,
-          badge(course.weeks,(WC[course.weeks]||"#888")+"22",WC[course.weeks]||"#888"),
-          badge(schedSummary(course.schedule),"#f0f0f0","#555"),
-          cf.length?badge("⚠ 시간겹침","#fff0f0","#d00"):null,
+          course.cross?bdg("타과정","#eee","#555"):null,
+          bdg(course.weeks,(WC[course.weeks]||"#888")+"22",WC[course.weeks]||"#888"),
+          bdg(schedSummary(course.schedule),"#f0f0f0","#555"),
+          cf.length?bdg("⚠ 시간겹침","#fff0f0","#d00"):null
         ]),
         el("div",{style:{fontSize:"11px",color:"#888"}},course.code+" | "+course.professor+" 교수"),
-        el("div",{style:{fontSize:"11px",color:course.cross?"#e07b54":"#aaa"}},course.eligibility),
+        el("div",{style:{fontSize:"11px",color:course.cross?"#e07b54":"#aaa"}},course.eligibility)
       ]),
-      el("button",{
-        style:{background:sel?course.color:"#f0f0f0",color:sel?"#fff":"#555",borderRadius:"20px",fontSize:"12px",padding:"5px 12px",fontWeight:"600",flexShrink:"0"},
-        onClick:()=>{
+      el("button",{style:{background:sel?course.color:"#f0f0f0",color:sel?"#fff":"#555",borderRadius:"20px",fontSize:"12px",padding:"5px 12px",fontWeight:"600",flexShrink:"0",border:"none",cursor:"pointer",fontFamily:"inherit"},
+        onClick:function(){
           if(!G.user){G.showGuest=true;render();return;}
           if(sel)doRemove(course.id);
           else{G.addForm={reason:"",rating:""};G.addModal={courseId:course.id};render();}
-        }
-      },sel?"✓ 담음":"+ 담기"),
+        }},sel?"✓ 담음":"+ 담기")
     ]),
-    cf.length?el("div",{class:"conflict-box"},[
+    cf.length?el("div",{class:"cfbox"},[
       el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#c00",marginBottom:"3px"}},"⚠ 아래 과목과 시간이 겹쳐요"),
-      ...cf.map(c=>el("div",{style:{fontSize:"11px",color:"#c00"}},"· "+c.course.name+" ("+c.dates.map(fmtMD).join(", ")+")"))
+      ...cf.map(function(c){return el("div",{style:{fontSize:"11px",color:"#c00"}},"· "+c.course.name+" ("+c.dates.map(fmtMD).join(", ")+")");})
     ]):null,
     el("div",{style:{marginTop:"10px"}},[
       el("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:"3px"}},[
         el("span",{style:{fontSize:"11px",color:"#555"}},["관심인원 ",el("b",{},[String(sels.length)+"명"])]),
-        course.capacity?el("span",{style:{fontSize:"11px",color:"#999"}},"정원 "+course.capacity+"명"+(pct!==null?" ("+pct+"%)":"")):null,
+        course.capacity?el("span",{style:{fontSize:"11px",color:"#999"}},"정원 "+course.capacity+"명"+(pct!==null?" ("+pct+"%)":"")):null
       ]),
-      course.capacity?el("div",{class:"progress-bar"},[el("div",{class:"progress-fill",style:{width:Math.min(pct,100)+"%",background:pct>80?"#e03":pct>50?"#f5a623":course.color}})]):null,
+      course.capacity?el("div",{class:"pbar"},[el("div",{class:"pfill",style:{width:Math.min(pct,100)+"%",background:pct>80?"#e03":pct>50?"#f5a623":course.color}})]):null
     ]),
     expanded?el("div",{style:{marginTop:"12px",borderTop:"1px solid #f0f0f0",paddingTop:"12px"}},[
       el("div",{style:{marginBottom:"10px"}},[
         el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"5px"}},"📅 강의 일정"),
-        el("div",{class:"schedule-wrap"},course.schedule.map(sc=>el("span",{class:"chip",style:{background:course.color+"15",color:course.color,borderColor:course.color+"44"}},fmtMD(sc.date)+"("+sc.day+") "+sc.time))),
-        course.remarks?el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"5px"}},"⚠ "+course.remarks):null,
+        el("div",{class:"swrap"},course.schedule.map(function(sc){return el("span",{class:"chip",style:{background:course.color+"15",color:course.color,borderColor:course.color+"44"}},fmtMD(sc.date)+"("+sc.day+") "+sc.time);})),
+        course.remarks?el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"5px"}},"⚠ "+course.remarks):null
       ]),
       el("div",{style:{marginBottom:"10px"}},[
         el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"5px"}},"👥 참여 예정자 ("+sels.length+"명)"),
         sels.length===0?el("div",{style:{fontSize:"11px",color:"#bbb"}},"아직 없어요!"):
-        el("div",{},sels.map(s=>{
-          const u=getUser(s.userId);if(!u)return null;
-          return el("div",{class:"member-card"},[
+        el("div",{},sels.map(function(s){
+          var u=getUser(s.userId);if(!u)return null;
+          return el("div",{class:"mc"},[
             el("div",{style:{display:"flex",alignItems:"center",gap:"6px",flexWrap:"wrap"}},[
               el("span",{style:{fontSize:"12px",fontWeight:"600",color:"#222"}},u.name+(G.user&&G.user.id===u.id?" (나)":"")),
               el("span",{style:{fontSize:"10px",color:"#888"}},u.program+" "+u.cohort),
-              s.rating?el("span",{style:{fontSize:"10px",background:"#f0f0f0",borderRadius:"6px",padding:"1px 6px"}},s.rating):null,
+              s.rating?el("span",{style:{fontSize:"10px",background:"#f0f0f0",borderRadius:"6px",padding:"1px 6px"}},s.rating):null
             ]),
-            s.reason?el("div",{style:{fontSize:"11px",color:"#555",marginTop:"3px"}},"💬 "+s.reason):null,
+            s.reason?el("div",{style:{fontSize:"11px",color:"#555",marginTop:"3px"}},"💬 "+s.reason):null
           ]);
-        })),
+        }))
       ]),
       G.user&&sel&&mySel?el("div",{style:{background:"#f8f8f8",borderRadius:"10px",padding:"10px"}},[
         el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"8px"}},"✏️ 내 정보 수정"),
         el("div",{style:{marginBottom:"8px"}},[
           el("div",{style:{fontSize:"11px",color:"#666",marginBottom:"4px"}},"수강 이유 / 메모"),
-          (()=>{const ta=document.createElement("textarea");ta.placeholder="이 과목을 담은 이유나 메모 (선택)";ta.value=mySel.reason||"";ta.addEventListener("blur",e=>doField(course.id,"reason",e.target.value));return ta;})(),
+          (function(){var ta=document.createElement("textarea");ta.placeholder="이 과목을 담은 이유나 메모 (선택)";ta.value=mySel.reason||"";ta.addEventListener("blur",function(e){doField(course.id,"reason",e.target.value);});return ta;})()
         ]),
         el("div",{},[
           el("div",{style:{fontSize:"11px",color:"#666",marginBottom:"5px"}},"강의 평가"),
-          el("div",{class:"rating-wrap"},RATINGS.map(r=>el("button",{class:"rating-btn",style:{background:mySel.rating===r?course.color:"#eee",color:mySel.rating===r?"#fff":"#555"},onClick:()=>doField(course.id,"rating",mySel.rating===r?"":r)},r))),
-        ]),
-      ]):null,
-    ]):null,
+          el("div",{class:"rwrap"},RATINGS.map(function(r){
+            return el("button",{class:"rbtn",style:{background:mySel.rating===r?course.color:"#eee",color:mySel.rating===r?"#fff":"#555"},
+              onClick:function(){doField(course.id,"rating",mySel.rating===r?"":r);}},r);
+          }))
+        ])
+      ]):null
+    ]):null
   ]);
 }
 
 function renderCourses(){
-  const main=COURSES.filter(c=>!c.cross),cross=COURSES.filter(c=>c.cross);
+  var main=COURSES.filter(function(c){return !c.cross;}),cross=COURSES.filter(function(c){return c.cross;});
   return el("div",{},[
     el("div",{style:{fontSize:"12px",color:"#888",marginBottom:"10px"}},"총 "+COURSES.length+"개 과목 | "+(G.user?"내 수강계획: "+myIds().length+"과목":"로그인하면 수강계획을 저장할 수 있어요")),
     ...main.map(renderCard),
     cross.length?el("div",{style:{marginTop:"20px",paddingTop:"16px",borderTop:"2px dashed #ddd"}},[
       el("div",{style:{fontSize:"14px",fontWeight:"800",color:"#1a2540",marginBottom:"4px"}},"🔄 타과정 개방 강좌"),
       el("div",{style:{fontSize:"11px",color:"#888",marginBottom:"12px"}},"수강변경기간에 잔여석 신청 가능한 과목입니다."),
-      ...cross.map(renderCard),
-    ]):null,
+      ...cross.map(renderCard)
+    ]):null
   ]);
 }
 
 function renderCalendar(){
-  const y=G.calYear,m=G.calMonth;
-  const days=new Date(y,m+1,0).getDate(),fd=new Date(y,m,1).getDay();
-  const ms=y+"-"+pad(m+1);
-  const ids=G.user?myIds():COURSES.map(c=>c.id);
+  var y=G.calYear,m=G.calMonth;
+  var days=new Date(y,m+1,0).getDate(),fd=new Date(y,m,1).getDay();
+  var ms=y+"-"+pad(m+1);
+  var ids=G.user?myIds():COURSES.map(function(c){return c.id;});
   return el("div",{},[
     el("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"12px"}},[
-      el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px"},onClick:()=>{if(m===0){G.calYear--;G.calMonth=11;}else G.calMonth--;render();}},"◀"),
+      el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px",border:"none",cursor:"pointer"},onClick:function(){if(m===0){G.calYear--;G.calMonth=11;}else G.calMonth--;render();}},"◀"),
       el("b",{style:{fontSize:"15px"}},y+"년 "+(m+1)+"월"),
-      el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px"},onClick:()=>{if(m===11){G.calYear++;G.calMonth=0;}else G.calMonth++;render();}},"▶"),
+      el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px",border:"none",cursor:"pointer"},onClick:function(){if(m===11){G.calYear++;G.calMonth=0;}else G.calMonth++;render();}},"▶")
     ]),
     el("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:"2px",marginBottom:"4px"}},[
-      ...["일","월","화","수","목","금","토"].map((d,i)=>el("div",{style:{textAlign:"center",fontSize:"11px",fontWeight:"700",color:i===0?"#e03":i===6?"#47a":"#666",padding:"2px 0"}},d)),
-      ...Array.from({length:fd},()=>el("div",{})),
-      ...Array.from({length:days},(_,i)=>{
-        const d=i+1,ds=ms+"-"+pad(d);
-        const cs=COURSES.filter(c=>ids.includes(c.id)&&c.schedule.some(s=>s.date===ds));
-        const isReg=ds>="2026-05-26"&&ds<="2026-05-29";
-        const di=(fd+d-1)%7;
+      ...["일","월","화","수","목","금","토"].map(function(d,i){return el("div",{style:{textAlign:"center",fontSize:"11px",fontWeight:"700",color:i===0?"#e03":i===6?"#47a":"#666",padding:"2px 0"}},d);}),
+      ...Array.from({length:fd},function(){return el("div",{});}),
+      ...Array.from({length:days},function(_,i){
+        var d=i+1,ds=ms+"-"+pad(d);
+        var cs=COURSES.filter(function(c){return ids.indexOf(c.id)>=0&&c.schedule.some(function(s){return s.date===ds;});});
+        var isReg=ds>="2026-05-26"&&ds<="2026-05-29";
+        var di=(fd+d-1)%7;
         return el("div",{style:{minHeight:"54px",background:isReg?"#fffbe6":"#fff",border:isReg?"1.5px solid #f5c518":"1px solid #eee",borderRadius:"6px",padding:"2px 3px",overflow:"hidden"}},[
           el("div",{style:{fontSize:"11px",color:di===0?"#e03":di===6?"#47a":"#333",fontWeight:isReg?"700":"400"}},String(d)),
           isReg?el("div",{style:{fontSize:"8px",color:"#b8860b"}},"수강신청"):null,
-          ...cs.slice(0,3).map(c=>el("div",{style:{fontSize:"8px",background:c.color,color:"#fff",borderRadius:"3px",padding:"1px 2px",marginTop:"1px",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}},c.name)),
-          cs.length>3?el("div",{style:{fontSize:"8px",color:"#999"}},"+"+String(cs.length-3)):null,
+          ...cs.slice(0,3).map(function(c){return el("div",{style:{fontSize:"8px",background:c.color,color:"#fff",borderRadius:"3px",padding:"1px 2px",marginTop:"1px",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}},c.name);}),
+          cs.length>3?el("div",{style:{fontSize:"8px",color:"#999"}},"+"+String(cs.length-3)):null
         ]);
-      }),
+      })
     ]),
     el("div",{style:{fontSize:"11px",color:"#999",marginTop:"6px"}},[
       G.user?"내 수강계획 과목만 표시":"전체 과목 표시",
-      el("span",{style:{marginLeft:"8px",background:"#fffbe6",border:"1px solid #f5c518",borderRadius:"3px",padding:"1px 5px"}},"수강신청기간"),
-    ]),
+      el("span",{style:{marginLeft:"8px",background:"#fffbe6",border:"1px solid #f5c518",borderRadius:"3px",padding:"1px 5px"}},"수강신청기간")
+    ])
   ]);
 }
 
 function renderMembers(){
-  const withSel=G.data.users.filter(u=>G.data.selections.some(s=>s.userId===u.id));
+  var withSel=G.data.users.filter(function(u){return G.data.selections.some(function(s){return s.userId===u.id;});});
   if(!withSel.length)return el("div",{style:{textAlign:"center",color:"#bbb",padding:"40px"}},"아직 수강계획을 등록한 원우가 없어요.");
-  return el("div",{},withSel.map(u=>{
-    const sels=G.data.selections.filter(s=>s.userId===u.id);
+  return el("div",{},withSel.map(function(u){
+    var sels=G.data.selections.filter(function(s){return s.userId===u.id;});
     return el("div",{class:"card"},[
       el("div",{style:{fontWeight:"700",fontSize:"14px",color:"#222"}},u.name+(G.user&&G.user.id===u.id?" (나)":"")),
       el("div",{style:{fontSize:"11px",color:"#888",marginBottom:"8px"}},u.program+" "+u.cohort),
-      el("div",{style:{display:"flex",flexWrap:"wrap",gap:"5px"}},sels.map(s=>{
-        const c=COURSES.find(x=>x.id===s.courseId);
+      el("div",{style:{display:"flex",flexWrap:"wrap",gap:"5px"}},sels.map(function(s){
+        var c=COURSES.find(function(x){return x.id===s.courseId;});
         return c?el("span",{style:{fontSize:"11px",background:c.color+"22",color:c.color,borderRadius:"6px",padding:"3px 8px",border:"1px solid "+c.color+"44",fontWeight:"600"}},c.name):null;
-      })),
+      }))
     ]);
   }));
 }
 
 function renderAll(){
-  const depts=["전체",...new Set(ALL_COURSES.map(c=>c.dept))];
-  const filtered=G.allDept==="전체"?ALL_COURSES:ALL_COURSES.filter(c=>c.dept===G.allDept);
+  var depts=["전체"].concat([...new Set(ALL_COURSES.map(function(c){return c.dept;}))]);
+  var filtered=G.allDept==="전체"?ALL_COURSES:ALL_COURSES.filter(function(c){return c.dept===G.allDept;});
   return el("div",{},[
     el("div",{style:{display:"flex",flexWrap:"wrap",gap:"5px",marginBottom:"12px"}},
-      depts.map(d=>el("button",{style:{fontSize:"11px",padding:"4px 10px",borderRadius:"14px",border:"1px solid #ddd",background:G.allDept===d?"#1a2540":"#fff",color:G.allDept===d?"#fff":"#555",cursor:"pointer"},onClick:()=>{G.allDept=d;render();}},d))
+      depts.map(function(d){return el("button",{style:{fontSize:"11px",padding:"4px 10px",borderRadius:"14px",border:"1px solid #ddd",background:G.allDept===d?"#1a2540":"#fff",color:G.allDept===d?"#fff":"#555",cursor:"pointer",fontFamily:"inherit"},onClick:function(){G.allDept=d;render();}},d);})
     ),
     el("div",{style:{fontSize:"12px",color:"#888",marginBottom:"10px"}},filtered.length+"개 과목"),
-    ...filtered.map(c=>{
-      const dc=DC[c.dept]||"#888",wc=WC[c.weeks]||"#888";
+    ...filtered.map(function(c){
+      var dc=DC[c.dept]||"#888",wc=WC[c.weeks]||"#888";
       return el("div",{class:"card"},[
         el("div",{style:{display:"flex",alignItems:"center",gap:"3px",flexWrap:"wrap",marginBottom:"4px"}},[
           el("span",{style:{fontSize:"13px",fontWeight:"700",color:"#222",marginRight:"3px"}},c.name),
-          badge(c.dept,dc+"22",dc),
-          badge(c.weeks,wc+"22",wc),
-          badge(c.days+" / "+c.time,"#f0f0f0","#555"),
+          bdg(c.dept,dc+"22",dc),bdg(c.weeks,wc+"22",wc),bdg(c.days+" / "+c.time,"#f0f0f0","#555")
         ]),
         el("div",{style:{fontSize:"11px",color:"#888"}},c.code+" | "+c.professor+" 교수"),
         c.capacity?el("div",{style:{fontSize:"11px",color:"#aaa"}},"정원 "+c.capacity+"명"):null,
-        el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"3px"}},c.remarks),
+        el("div",{style:{fontSize:"10px",color:"#e07b54",marginTop:"3px"}},c.remarks)
       ]);
-    }),
+    })
   ]);
 }
 
 function renderGuestModal(){
   if(!G.showGuest)return el("span",{});
-  return el("div",{class:"modal-overlay",onClick:e=>{if(e.target===e.currentTarget){G.showGuest=false;render();}}},[
-    el("div",{class:"modal"},[
+  return el("div",{class:"ov",onClick:function(e){if(e.target===e.currentTarget){G.showGuest=false;render();}}},[
+    el("div",{class:"mod"},[
       el("div",{style:{fontSize:"36px",textAlign:"center",marginBottom:"12px"}},"👋"),
       el("div",{style:{fontWeight:"800",fontSize:"17px",color:"#1a2540",textAlign:"center",marginBottom:"8px"}},"로그인하고 함께 계획하세요"),
       el("div",{style:{fontSize:"13px",color:"#666",textAlign:"center",lineHeight:"1.7",marginBottom:"24px"}},"원우들의 수강 계획을 확인하고 내 수강계획을 공유할 수 있어요."),
-      el("div",{class:"btn-row"},[
-        el("button",{class:"btn btn-secondary",onClick:()=>{G.showGuest=false;render();}},"취소"),
-        el("button",{class:"btn btn-primary",onClick:()=>{G.showGuest=false;G.showLogin=true;render();}},"로그인하기"),
-      ]),
-    ]),
+      el("div",{class:"brow"},[
+        el("button",{class:"btn bs",onClick:function(){G.showGuest=false;render();}},"취소"),
+        el("button",{class:"btn bp",onClick:function(){G.showGuest=false;G.showLogin=true;render();}},"로그인하기")
+      ])
+    ])
   ]);
 }
 
 function renderLoginModal(){
   if(!G.showLogin)return el("span",{});
-  return el("div",{class:"modal-overlay",onClick:e=>{if(e.target===e.currentTarget){G.showLogin=false;render();}}},[
-    el("div",{class:"modal"},[
+  return el("div",{class:"ov",onClick:function(e){if(e.target===e.currentTarget){G.showLogin=false;render();}}},[
+    el("div",{class:"mod"},[
       el("div",{style:{fontWeight:"800",fontSize:"16px",marginBottom:"16px",color:"#1a2540"}},"내 정보 입력"),
-      ...[["소속 과정","program",PROGRAMS],["기수","cohort",COHORTS]].map(([label,key,opts])=>
-        el("div",{style:{marginBottom:"12px"}},[
+      ...[["소속 과정","program",PROGRAMS],["기수","cohort",COHORTS]].map(function(arr){
+        var label=arr[0],key=arr[1],opts=arr[2];
+        return el("div",{style:{marginBottom:"12px"}},[
           el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},label),
-          (()=>{const s=document.createElement("select");Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});opts.forEach(o=>{const op=document.createElement("option");op.value=o;op.textContent=o;if(o===G.loginForm[key])op.selected=true;s.append(op);});s.addEventListener("change",e=>G.loginForm[key]=e.target.value);return s;})(),
-        ])
-      ),
+          (function(){var s=document.createElement("select");Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});opts.forEach(function(o){var op=document.createElement("option");op.value=o;op.textContent=o;if(o===G.loginForm[key])op.selected=true;s.append(op);});s.addEventListener("change",function(e){G.loginForm[key]=e.target.value;});return s;})()
+        ]);
+      }),
       el("div",{style:{marginBottom:"18px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},"이름"),
-        (()=>{const inp=document.createElement("input");inp.type="text";inp.placeholder="실명을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",e=>G.loginForm.name=e.target.value);inp.addEventListener("keydown",e=>e.key==="Enter"&&doLogin());return inp;})(),
+        (function(){var inp=document.createElement("input");inp.type="text";inp.placeholder="실명을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",function(e){G.loginForm.name=e.target.value;});inp.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});return inp;})()
       ]),
-      el("div",{class:"btn-row"},[
-        el("button",{class:"btn btn-secondary",onClick:()=>{G.showLogin=false;render();}},"취소"),
-        el("button",{class:"btn btn-primary",style:{opacity:G.loginForm.name.trim()?"1":"0.4"},onClick:doLogin},"입력 완료"),
-      ]),
-    ]),
+      el("div",{class:"brow"},[
+        el("button",{class:"btn bs",onClick:function(){G.showLogin=false;render();}},"취소"),
+        el("button",{class:"btn bp",style:{opacity:G.loginForm.name.trim()?"1":"0.4"},onClick:doLogin},"입력 완료")
+      ])
+    ])
   ]);
 }
 
 function renderAddModal(){
   if(!G.addModal)return el("span",{});
-  const c=COURSES.find(x=>x.id===G.addModal.courseId);if(!c)return el("span",{});
-  return el("div",{class:"modal-overlay",onClick:e=>{if(e.target===e.currentTarget){G.addModal=null;render();}}},[
-    el("div",{class:"modal"},[
+  var c=COURSES.find(function(x){return x.id===G.addModal.courseId;});if(!c)return el("span",{});
+  return el("div",{class:"ov",onClick:function(e){if(e.target===e.currentTarget){G.addModal=null;render();}}},[
+    el("div",{class:"mod"},[
       el("div",{style:{display:"flex",alignItems:"center",gap:"8px",marginBottom:"16px"}},[
         el("div",{style:{width:"10px",height:"10px",borderRadius:"50%",background:c.color,flexShrink:"0"}}),
-        el("div",{style:{fontWeight:"800",fontSize:"15px",color:"#1a2540"}},c.name),
+        el("div",{style:{fontWeight:"800",fontSize:"15px",color:"#1a2540"}},c.name)
       ]),
       el("div",{style:{marginBottom:"14px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"5px"}},"수강 이유 / 메모 (선택)"),
-        (()=>{const ta=document.createElement("textarea");ta.placeholder="왜 이 과목을 담으려고 하나요?";ta.value=G.addForm.reason;Object.assign(ta.style,{width:"100%",padding:"10px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"13px",minHeight:"70px",resize:"vertical"});ta.addEventListener("input",e=>G.addForm.reason=e.target.value);return ta;})(),
+        (function(){var ta=document.createElement("textarea");ta.placeholder="왜 이 과목을 담으려고 하나요?";ta.value=G.addForm.reason;Object.assign(ta.style,{width:"100%",padding:"10px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"13px",minHeight:"70px",resize:"vertical"});ta.addEventListener("input",function(e){G.addForm.reason=e.target.value;});return ta;})()
       ]),
       el("div",{style:{marginBottom:"20px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"6px"}},"강의 평가 (선택 · 들어봤다면)"),
-        el("div",{class:"rating-wrap"},RATINGS.map(r=>el("button",{class:"rating-btn",style:{background:G.addForm.rating===r?c.color:"#f0f0f0",color:G.addForm.rating===r?"#fff":"#555"},onClick:()=>{G.addForm.rating=G.addForm.rating===r?"":r;render();}},r))),
+        el("div",{class:"rwrap"},RATINGS.map(function(r){
+          return el("button",{class:"rbtn",style:{background:G.addForm.rating===r?c.color:"#f0f0f0",color:G.addForm.rating===r?"#fff":"#555"},
+            onClick:function(){G.addForm.rating=G.addForm.rating===r?"":r;render();}},r);
+        }))
       ]),
-      el("div",{class:"btn-row"},[
-        el("button",{class:"btn btn-secondary",onClick:()=>{G.addModal=null;render();}},"취소"),
-        el("button",{class:"btn",style:{background:c.color,color:"#fff",fontWeight:"700"},onClick:doAdd},"수강계획에 담기"),
-      ]),
-    ]),
+      el("div",{class:"brow"},[
+        el("button",{class:"btn bs",onClick:function(){G.addModal=null;render();}},"취소"),
+        el("button",{class:"btn",style:{background:c.color,color:"#fff",fontWeight:"700"},onClick:doAdd},"수강계획에 담기")
+      ])
+    ])
   ]);
 }
 
 function render(){
-  const app=document.getElementById("app");
+  var app=document.getElementById("app");
   if(!app)return;
   app.innerHTML="";
   app.append(
-    renderHeader(),
-    el("div",{class:"content"},[
+    el("div",{class:"hdr"},[
+      el("div",{class:"hdr-top"},[
+        el("div",{},[
+          el("div",{style:{color:"#fff",fontWeight:"800",fontSize:"15px"}},"KAIST MBA"),
+          el("div",{style:{color:"#8fa8d8",fontSize:"11px"}},"2026 여름학기 수강계획 공유")
+        ]),
+        G.user
+          ?el("div",{style:{display:"flex",alignItems:"center",gap:"8px"}},[
+              el("span",{style:{color:"#a0c4ff",fontSize:"12px"}},G.user.name),
+              el("button",{style:{background:"rgba(255,255,255,.13)",color:"#ccc",borderRadius:"14px",fontSize:"11px",padding:"4px 10px",border:"none",cursor:"pointer",fontFamily:"inherit"},onClick:doLogout},"로그아웃")
+            ])
+          :el("button",{style:{background:"#4F86C6",color:"#fff",borderRadius:"16px",fontSize:"12px",padding:"6px 14px",border:"none",cursor:"pointer",fontFamily:"inherit"},onClick:function(){G.showLogin=true;render();}},"로그인")
+      ]),
+      el("div",{class:"nav"},[
+        ["courses","📚 과목"],["calendar","📅 달력"],["members","👥 원우"],["all","🏫 전체과정"]
+      ].map(function(arr){return el("button",{class:G.view===arr[0]?"on":"",onClick:function(){G.view=arr[0];render();}},arr[1]);}))
+    ]),
+    el("div",{class:"body"},[
       el("div",{class:"banner"},[
         el("div",{style:{fontSize:"11px",color:"#8fa8d8"}},"수강신청까지"),
         el("div",{style:{fontSize:"20px",fontWeight:"800"}},["D-5 ",el("span",{style:{fontSize:"13px",fontWeight:"400",color:"#a0c4ff"}},"5.26(화) 12:30 시작")]),
-        el("div",{style:{fontSize:"10px",color:"#8fa8d8",marginTop:"2px"}},"추첨: 5.26 → 결과발표: 5.28 12:00 → 선착순: 5.28~5.29"),
+        el("div",{style:{fontSize:"10px",color:"#8fa8d8",marginTop:"2px"}},"추첨: 5.26 → 결과발표: 5.28 12:00 → 선착순: 5.28~5.29")
       ]),
-      G.view==="courses"?renderCourses():G.view==="calendar"?renderCalendar():G.view==="members"?renderMembers():renderAll(),
+      G.view==="courses"?renderCourses():G.view==="calendar"?renderCalendar():G.view==="members"?renderMembers():renderAll()
     ]),
     renderGuestModal(),
     renderLoginModal(),
     renderAddModal(),
-    G.toast?el("div",{class:"toast"},G.toast):el("span",{}),
+    G.toast?el("div",{class:"toast"},G.toast):el("span",{})
   );
 }
+
+// ── 시작 ──────────────────────────────────────────────
+loadLocal();
+render();
+syncFromServer();
 </script>
 </body>
 </html>
