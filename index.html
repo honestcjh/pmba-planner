@@ -15,7 +15,7 @@
 
 html, body {
   background: #f6f7fb;
-  font-family: 'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   min-height: 100vh;
   width: 100%;
 }
@@ -148,7 +148,8 @@ const ALL_COURSES = [
 
 function toMin(t){const[h,m]=t.split(":");return+h*60+ +m;}
 function parseRange(str){const m=str.match(/(\d{1,2}:\d{2})/g);if(!m||m.length<2)return null;return{s:toMin(m[0]),e:toMin(m[1])};}
-function conflicts(cid,myIds){const a=COURSES.find(c=>c.id===cid);if(!a)return[];return myIds.filter(id=>id!==cid).flatMap(id=>{const b=COURSES.find(c=>c.id===id);if(!b)return[];const dates=a.schedule.filter(sa=>b.schedule.some(sb=>sa.date===sb.date&& Dekker((()=> {const ra=parseRange(sa.time),rb=parseRange(sb.time);return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;})()))).map(s=>s.date);return dates.length?[{course:b,dates}]:[];});}
+/* 💡 오타(Dekker 키워드) 완전 교정 완료 */
+function conflicts(cid,myIds){const a=COURSES.find(c=>c.id===cid);if(!a)return[];return myIds.filter(id=>id!==cid).flatMap(id=>{const b=COURSES.find(c=>c.id===id);if(!b)return[];const dates=a.schedule.filter(sa=>b.schedule.some(sb=>sa.date===sb.date&&(()=> {const ra=parseRange(sa.time),rb=parseRange(sb.time);return ra&&rb&&ra.s<rb.e&&rb.s<ra.e;})())).map(s=>s.date);return dates.length?[{course:b,dates}]:[];});}
 function fmtMD(s){const p=s.split("-");return p[1]+"/"+p[2];}
 function pad(n){return String(n).padStart(2,"0");}
 
@@ -347,7 +348,7 @@ function renderCalendar(){
       el("b",{style:{fontSize:"15px"}},y+"년 "+(m+1)+"월"),
       el("button",{style:{background:"#eee",color:"#333",borderRadius:"8px",padding:"6px 12px"},onClick:()=>{m===11?(state.calYear++,state.calMonth=0):state.calMonth++;render();}},"▶"),
     ]),
-    /* 💡 일요일 공간 축소 세팅: 일요일은 0.7 비율, 평일 및 토요일은 1 비율로 분할하여 최적화 */
+    /* 💡 일요일 축소 가로 레이아웃 설정 (0.7fr : 1fr 비율 구조) */
     el("div",{style:{display:"grid",gridTemplateColumns:"0.7fr 1fr 1fr 1fr 1fr 1fr 1fr",gap:"2px",marginBottom:"4px"}},[
       ...["일","월","화","수","목","금","토"].map((d,i)=>el("div",{style:{textAlign:"center",fontSize:"11px",fontWeight:"700",color:i===0?"#e03":i===6?"#47a":"#666",padding:"2px 0"}},d)),
       ...Array.from({length:fd},(_,i)=>el("div",{key:"e"+i},[])),
@@ -359,7 +360,7 @@ function renderCalendar(){
         return el("div",{style:{minHeight:"54px",background:isReg?"#fffbe6":"#fff",border:isReg?"1.5px solid #f5c518":"1px solid #eee",borderRadius:"6px",padding:"2px 3px",overflow:"hidden"}},[
           el("div",{style:{fontSize:"11px",fontWeight:isReg?"700":"400",color:di===0?"#e03":di===6?"#47a":"#333"}},String(d)),
           isReg?el("div",{style:{fontSize:"8px",color:"#b8860b"}},"수강신청"):null,
-          /* 💡 과목명 박스 가로 탈출 전면 차단 (텍스트가 그리드를 늘리지 않도록 강제 말줄임표 처리) */
+          /* 💡 과목명 텍스트 박스가 가로 그리드를 강제로 밀지 못하도록 삼중 잠금(말줄임표 및 가로폭 고정) */
           ...cs.slice(0,3).map(c=>el("div",{style:{fontSize:"8px",background:c.color,color:"#fff",borderRadius:"3px",padding:"1px 2px",marginTop:"1px",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis",width:"100%"}},c.name)),
           cs.length>3?el("div",{style:{fontSize:"8px",color:"#999"}},"+"+String(cs.length-3)):null,
         ]);
@@ -372,7 +373,7 @@ function renderCalendar(){
   ]);
 }
 
-/* 💡 "🏫 전체과정" 렌더링 로직 부활 */
+/* 💡 "🏫 전체과정" 탭 데이터 연동 구조 복원 */
 function renderAll(){
   const depts=["전체",...new Set(ALL_COURSES.map(c=>c.dept))];
   const filtered=state.allDept==="전체"?ALL_COURSES:ALL_COURSES.filter(c=>c.dept===state.allDept);
