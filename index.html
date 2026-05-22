@@ -393,13 +393,19 @@ function renderLoginModal(){
     el("div",{class:"mod"},[
       el("div",{style:{fontWeight:"800",fontSize:"16px",marginBottom:"6px",color:"#1a2540"}},"내 이름 등록"),
       el("div",{style:{fontSize:"12px",color:"#888",marginBottom:"16px"}},"이름만 입력하면 원우들과 수강 관심 과목을 공유할 수 있어요 😊"),
-      ...[["소속 과정","program",PROGRAMS],["기수","cohort",COHORTS]].map(function(arr){
+      ...[["소속 과정","program",PROGRAMS]].map(function(arr){
         var label=arr[0],key=arr[1],opts=arr[2];
         return el("div",{style:{marginBottom:"12px"}},[
           el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},label),
-          (function(){var s=document.createElement("select");Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #4F86C6",fontSize:"14px",color:"#222",background:"#fff",appearance:"auto"});opts.forEach(function(o){var op=document.createElement("option");op.value=o;op.textContent=o;if(o===G.loginForm[key])op.selected=true;s.append(op);});s.addEventListener("change",function(e){G.loginForm[key]=e.target.value;});return s;})()
+          (function(){var s=document.createElement("select");Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #4F86C6",fontSize:"14px",color:"#222",background:"#fff",appearance:"auto"});opts.forEach(function(o){var op=document.createElement("option");op.value=o;op.textContent=o;if(o===G.loginForm[key])op.selected=true;s.append(op);});s.addEventListener("change",function(e){G.loginForm[key]=e.target.value;render();});return s;})()
         ]);
       }),
+      el("div",{style:{marginBottom:"12px"}},[
+        el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},"기수"),
+        G.loginForm.program==="프로페셔널MBA"
+          ?(function(){var s=document.createElement("select");Object.assign(s.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #4F86C6",fontSize:"14px",color:"#222",background:"#fff",appearance:"auto"});COHORTS.forEach(function(o){var op=document.createElement("option");op.value=o;op.textContent=o;if(o===G.loginForm.cohort)op.selected=true;s.append(op);});s.addEventListener("change",function(e){G.loginForm.cohort=e.target.value;});return s;})()
+          :(function(){var inp=document.createElement("input");inp.type="text";inp.placeholder="기수를 직접 입력해주세요 (예: 5기)";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #4F86C6",fontSize:"14px",color:"#222"});inp.value=G.loginForm.cohort&&COHORTS.indexOf(G.loginForm.cohort)<0?G.loginForm.cohort:"";inp.addEventListener("input",function(e){G.loginForm.cohort=e.target.value;});return inp;})()
+      ]),
       el("div",{style:{marginBottom:"18px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},"이름"),
         (function(){var inp=document.createElement("input");inp.type="text";inp.placeholder="이름을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",function(e){G.loginForm.name=e.target.value;});inp.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});return inp;})()
