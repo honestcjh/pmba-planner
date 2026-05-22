@@ -255,8 +255,13 @@ function renderCard(course){
       ]),
       el("div",{style:{marginBottom:"10px"}},[
         el("div",{style:{fontSize:"11px",fontWeight:"700",color:"#555",marginBottom:"5px"}},"👥 참여 예정자 ("+sels.length+"명)"),
-        sels.length===0?el("div",{style:{fontSize:"11px",color:"#bbb"}},"아직 없어요!"):
-        el("div",{},sels.map(function(s){
+        !G.user
+          ?el("div",{style:{background:"#f0f5ff",borderRadius:8,padding:"10px 12px",fontSize:"11px",color:"#4F86C6",textAlign:"center"}},[
+              "이름을 등록하면 원우들의 수강 계획을 볼 수 있어요 😊",el("br",{}),
+              el("button",{style:{marginTop:"8px",background:"#4F86C6",color:"#fff",border:"none",borderRadius:"14px",padding:"5px 14px",fontSize:"11px",cursor:"pointer",fontFamily:"inherit"},onClick:function(){G.showLogin=true;render();}},"이름 등록하기")
+            ])
+          :sels.length===0?el("div",{style:{fontSize:"11px",color:"#bbb"}},"아직 없어요!"):
+          el("div",{},sels.map(function(s){
           var u=getUser(s.userId);if(!u)return null;
           return el("div",{class:"mc"},[
             el("div",{style:{display:"flex",alignItems:"center",gap:"6px",flexWrap:"wrap"}},[
@@ -335,6 +340,12 @@ function renderCalendar(){
 
 function renderMembers(){
   var withSel=G.data.users.filter(function(u){return G.data.selections.some(function(s){return s.userId===u.id;});});
+  if(!G.user)return el("div",{style:{background:"#f0f5ff",borderRadius:12,padding:"24px 16px",textAlign:"center"}},[
+    el("div",{style:{fontSize:"28px",marginBottom:"10px"}},"👥"),
+    el("div",{style:{fontWeight:"700",fontSize:"14px",color:"#1a2540",marginBottom:"6px"}},"원우들의 수강 계획 보기"),
+    el("div",{style:{fontSize:"12px",color:"#666",lineHeight:"1.7",marginBottom:"16px"}},"이름을 등록한 원우들만\n서로의 수강 계획을 확인할 수 있어요."),
+    el("button",{style:{background:"#4F86C6",color:"#fff",border:"none",borderRadius:"16px",padding:"10px 24px",fontSize:"13px",fontWeight:"700",cursor:"pointer",fontFamily:"inherit"},onClick:function(){G.showLogin=true;render();}},"이름 등록하기")
+  ]);
   if(!withSel.length)return el("div",{style:{textAlign:"center",color:"#bbb",padding:"40px"}},"아직 수강계획을 등록한 원우가 없어요.");
   return el("div",{},withSel.map(function(u){
     var sels=G.data.selections.filter(function(s){return s.userId===u.id;});
@@ -408,7 +419,7 @@ function renderLoginModal(){
       ]),
       el("div",{style:{marginBottom:"18px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},"이름"),
-        (function(){var inp=document.createElement("input");inp.type="text";inp.placeholder="이름을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",function(e){G.loginForm.name=e.target.value;});inp.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});return inp;})()
+        (function(){var inp=document.createElement("input");inp.type="text";inp.placeholder="실명을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",function(e){G.loginForm.name=e.target.value;});inp.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});return inp;})()
       ]),
       el("div",{class:"brow"},[
         el("button",{class:"btn bs",onClick:function(){G.showLogin=false;render();}},"취소"),
