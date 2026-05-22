@@ -402,7 +402,7 @@ function renderLoginModal(){
       }),
       el("div",{style:{marginBottom:"18px"}},[
         el("div",{style:{fontSize:"12px",color:"#555",marginBottom:"4px"}},"이름"),
-        (function(){var inp=document.createElement("input");inp.type="text";inp.placeholder="실명을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",function(e){G.loginForm.name=e.target.value;});inp.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});return inp;})()
+        (function(){var inp=document.createElement("input");inp.type="text";inp.placeholder="이름을 입력해주세요";Object.assign(inp.style,{width:"100%",padding:"9px 12px",borderRadius:"10px",border:"1.5px solid #ddd",fontSize:"14px"});inp.value=G.loginForm.name;inp.addEventListener("input",function(e){G.loginForm.name=e.target.value;});inp.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});return inp;})()
       ]),
       el("div",{class:"brow"},[
         el("button",{class:"btn bs",onClick:function(){G.showLogin=false;render();}},"취소"),
